@@ -648,6 +648,41 @@ try {
       await noOverflow();
     },
   );
+  await check("Компоновка при масштабе 200% на ПК", async () => {
+    const zoomContext = await browser.newContext({
+      viewport: { width: 720, height: 450 },
+      deviceScaleFactor: 2,
+    });
+    const zoomPage = await zoomContext.newPage();
+    zoomPage.on("pageerror", (e) => errors.push(e.message));
+    await zoomPage.addInitScript(() =>
+      localStorage.setItem(
+        "luma-studios-v1",
+        JSON.stringify({ signedIn: true, onboarded: true }),
+      ),
+    );
+    for (const p of [
+      "/",
+      "/catalog",
+      "/title/alice",
+      "/reader/alice",
+      "/audio/alice",
+      "/library",
+      "/profile",
+      "/integrations",
+    ]) {
+      await zoomPage.goto(base + "/#" + p);
+      await zoomPage.waitForTimeout(120);
+      assert(
+        await zoomPage.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+        "overflow at 200%: " + p,
+      );
+    }
+    await zoomPage.screenshot({ path: out + "/zoom-200-1440x900.png" });
+    await zoomContext.close();
+  });
   await check("JS: ошибок нет", async () => assert.deepEqual(errors, []));
 } catch (e) {
   console.error(e.stack);

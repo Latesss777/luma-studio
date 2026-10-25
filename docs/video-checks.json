@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-25T20:08:24.258Z",
+  "checks": [
+    {
+      "name": "Desktop",
+      "file": "Luma_Studios_Desktop.mp4",
+      "width": 1920,
+      "height": 1080,
+      "codec": "h264",
+      "pixelFormat": "yuv420p",
+      "fps": "30/1",
+      "duration": 189.533333,
+      "size": 12411541,
+      "faststart": true,
+      "fullyDecoded": true,
+      "seekFramesExtracted": true,
+      "capturedFrames": 1092,
+      "captureMethod": "Chromium compositor frames on paints",
+      "timeline": [
+        {
+          "name": "Вход",
+          "seconds": 0.0575968499999999
+        },
+        {
+          "name": "Онбординг",
+          "seconds": 20.535339908999998
+        },
+        {
+          "name": "Главная и карусель",
+          "seconds": 43.984355130999994
+        },
+        {
+          "name": "Произведение и главы",
+          "seconds": 58.292530926
+        },
+        {
+          "name": "Читалка",
+          "seconds": 64.341678705
+        },
+        {
+          "name": "Аудио",
+          "seconds": 89.83201315000001
+        },
+        {
+          "name": "Заметки и отзывы",
+          "seconds": 103.41506990599999
+        },
+        {
+          "name": "Библиотека и полка",
+          "seconds": 114.26531966800002
+        },
+        {
+          "name": "Профиль и аналитика",
+          "seconds": 130.269942664
+        },
+        {
+          "name": "Telegram",
+          "seconds": 146.46140121599998
+        },
+        {
+          "name": "Notion",
+          "seconds": 156.936922555
+        },
+        {
+          "name": "Экспорт",
+          "seconds": 166.90786816699998
+        },
+        {
+          "name": "Финал",
+          "seconds": 178.72937943899998
+        }
+      ]
+    },
+    {
+      "name": "Mobile",
+      "file": "Luma_Studios_Mobile.mp4",
+      "width": 1080,
+      "height": 1920,
+      "codec": "h264",
+      "pixelFormat": "yuv420p",
+      "fps": "30/1",
+      "duration": 198.2,
+      "size": 20725384,
+      "faststart": true,
+      "fullyDecoded": true,
+      "seekFramesExtracted": true,
+      "capturedFrames": 1171,
+      "captureMethod": "Chromium compositor frames on paints",
+      "timeline": [
+        {
+          "name": "Вход",
+          "seconds": 0.05620807100000002
+        },
+        {
+          "name": "Онбординг",
+          "seconds": 20.749607017000002
+        },
+        {
+          "name": "Главная и карусель",
+          "seconds": 44.377719725
+        },
+        {
+          "name": "Произведение и главы",
+          "seconds": 58.21320218699999
+        },
+        {
+          "name": "Читалка",
+          "seconds": 64.685569368
+        },
+        {
+          "name": "Аудио",
+          "seconds": 91.392761708
+        },
+        {
+          "name": "Заметки и отзывы",
+          "seconds": 106.460091518
+        },
+        {
+          "name": "Библиотека и полка",
+          "seconds": 118.387715819
+        },
+        {
+          "name": "Профиль и аналитика",
+          "seconds": 134.80741995399998
+        },
+        {
+          "name": "Telegram",
+          "seconds": 152.43612094699998
+        },
+        {
+          "name": "Notion",
+          "seconds": 163.84892139299998
+        },
+        {
+          "name": "Экспорт",
+          "seconds": 174.590189095
+        },
+        {
+          "name": "Финал",
+          "seconds": 187.58660622399998
+        }
+      ]
+    }
+  ]
+}

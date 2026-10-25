@@ -9,47 +9,68 @@ const destination = path.resolve(process.env.LUMA_OUTPUT || "output");
 await fs.mkdir(destination, { recursive: true });
 const work = path.resolve("work/record-" + mode);
 await fs.mkdir(work, { recursive: true });
+// A scaled iframe keeps the real 432×768 mobile viewport and lets the
+// compositor record a full 1080×1920 frame without resampling a low-res video.
 const viewport = mobile
-  ? { width: 432, height: 768 }
+  ? { width: 1080, height: 1920 }
   : { width: 1920, height: 1080 };
 const browser = await launch();
 const context = await browser.newContext({
   viewport,
-  deviceScaleFactor: mobile ? 2.5 : 1,
-  isMobile: mobile,
+  deviceScaleFactor: 1,
   hasTouch: mobile,
   acceptDownloads: true,
 });
-const page = await context.newPage();
+const browserPage = await context.newPage();
 const errors = [];
-page.on("pageerror", (e) => errors.push(e.message));
-page.setDefaultTimeout(12000);
-await page.goto(base);
+browserPage.on("pageerror", (e) => errors.push(e.message));
+browserPage.setDefaultTimeout(12000);
+let page = browserPage;
+if (mobile) {
+  await browserPage.goto(base);
+  await browserPage.setContent(
+    `<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#000}iframe{display:block;width:432px;height:768px;border:0;transform:scale(2.5);transform-origin:top left}</style></head><body><iframe name="luma-camera" src="${base}"></iframe></body></html>`,
+    { waitUntil: "load" },
+  );
+  page = browserPage.frame({ name: "luma-camera" });
+} else await page.goto(base);
 await page.evaluate(() => document.fonts.ready);
-await page.waitForTimeout(800);
-// Capture device-resolution frames continuously, including animations and input.
-let recording = true;
+await browserPage.waitForTimeout(800);
 const frames = [];
-const start = performance.now();
+const writes = [];
+let recording = true;
 let count = 0;
-const capture = (async () => {
-  while (recording) {
-    const t = performance.now();
-    const data = await page.screenshot({
-      type: "jpeg",
-      quality: 88,
-      scale: "device",
-      animations: "allow",
-    });
-    const name = `frame-${String(count++).padStart(6, "0")}.jpg`;
-    await fs.writeFile(path.join(work, name), data);
-    frames.push({ name, time: (t - start) / 1000 });
-    const elapsed = performance.now() - t;
-    if (elapsed < 42) await page.waitForTimeout(42 - elapsed);
-  }
-})();
+let durationEnd = 0;
+const start = performance.now();
+const epochStart = Date.now() / 1000;
+const camera = await context.newCDPSession(browserPage);
+let firstResolve;
+const firstFrame = new Promise((resolve) => (firstResolve = resolve));
+camera.on("Page.screencastFrame", (frame) => {
+  writes.push(
+    camera.send("Page.screencastFrameAck", { sessionId: frame.sessionId }),
+  );
+  if (!recording) return;
+  const name = `frame-${String(count++).padStart(6, "0")}.jpg`;
+  frames.push({
+    name,
+    time: Math.max(0, frame.metadata.timestamp - epochStart),
+  });
+  writes.push(
+    fs.writeFile(path.join(work, name), Buffer.from(frame.data, "base64")),
+  );
+  firstResolve();
+});
+await camera.send("Page.startScreencast", {
+  format: "jpeg",
+  quality: 90,
+  maxWidth: viewport.width,
+  maxHeight: viewport.height,
+  everyNthFrame: 1,
+});
+await firstFrame;
 const pace = Number(process.env.LUMA_RECORD_PACE || 1);
-const pause = (s = 1.7) => page.waitForTimeout(s * 1000 * pace);
+const pause = (s = 1.7) => browserPage.waitForTimeout(s * 1000 * pace);
 async function view(el) {
   await el.evaluate((e) =>
     e.scrollIntoView({
@@ -230,7 +251,7 @@ try {
   await pause(1.5);
   await tap("Предпросмотр", 2.3);
   await tap("Подтвердить демоэкспорт", 2);
-  const download = page.waitForEvent("download");
+  const download = browserPage.waitForEvent("download");
   await tap("Скачать CSV", 2);
   await (await download).saveAs(path.join(work, "Luma_Studios.csv"));
   scene("Финал");
@@ -240,8 +261,10 @@ try {
   console.error(e);
   errors.push(e.message);
 } finally {
+  durationEnd = (performance.now() - start) / 1000;
   recording = false;
-  await capture;
+  await camera.send("Page.stopScreencast");
+  await Promise.all(writes);
   await fs.writeFile(
     path.join(work, "timeline.json"),
     JSON.stringify(
@@ -250,7 +273,8 @@ try {
         timeline,
         errors,
         frames: frames.length,
-        duration: (performance.now() - start) / 1000,
+        duration: durationEnd,
+        captureMethod: "Chromium compositor frames on paints",
       },
       null,
       2,
@@ -260,12 +284,12 @@ try {
   await browser.close();
 }
 if (errors.length) throw Error(errors.join("\n"));
-const end = frames.at(-1).time;
+const end = durationEnd;
 const concat =
   frames
     .map(
       (f, i) =>
-        `file '${f.name}'\nduration ${Math.max(0.001, (frames[i + 1]?.time ?? end + 0.06) - f.time).toFixed(6)}`,
+        `file '${f.name}'\nduration ${Math.max(0.001, (frames[i + 1]?.time ?? end) - f.time).toFixed(6)}`,
     )
     .join("\n") + `\nfile '${frames.at(-1).name}'\n`;
 await fs.writeFile(path.join(work, "frames.txt"), concat);
@@ -289,7 +313,7 @@ const result = await new Promise((resolve) => {
       "-i",
       path.join(work, "frames.txt"),
       "-vf",
-      "fps=30",
+      "fps=30,scale=in_range=pc:out_range=tv:out_color_matrix=bt709,format=yuv420p",
       "-c:v",
       "libx264",
       "-preset",
@@ -298,6 +322,14 @@ const result = await new Promise((resolve) => {
       "19",
       "-pix_fmt",
       "yuv420p",
+      "-color_range",
+      "tv",
+      "-colorspace",
+      "bt709",
+      "-color_primaries",
+      "bt709",
+      "-color_trc",
+      "bt709",
       "-movflags",
       "+faststart",
       "-an",
