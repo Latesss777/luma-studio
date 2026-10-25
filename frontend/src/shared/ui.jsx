@@ -20,6 +20,29 @@ import { cover, findBook } from "../data/books";
 import { go, useStore } from "./store";
 export const formatIcons = [BookOpen, PanelsTopLeft, ScrollText, Headphones];
 export const genreIcons = [Sparkles, Search, Heart, Orbit, Skull, Compass];
+export function Scene({ name, className = "", label }) {
+  return (
+    <picture
+      className={`scene ${className}`}
+      role={label ? "img" : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : true}
+    >
+      <source
+        media="(max-width: 600px)"
+        srcSet={`/assets/backgrounds/${name}-mobile.jpg`}
+      />
+      <img
+        src={`/assets/backgrounds/${name}-desktop.jpg`}
+        alt=""
+        width="1672"
+        height="941"
+        decoding="async"
+        fetchPriority={name === "auth" ? "high" : "auto"}
+      />
+    </picture>
+  );
+}
 export function Brand({ large = false }) {
   return (
     <div className={`brand ${large ? "large" : ""}`} aria-label="Luma Studios">

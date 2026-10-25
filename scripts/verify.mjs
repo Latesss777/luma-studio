@@ -683,6 +683,58 @@ try {
     await zoomPage.screenshot({ path: out + "/zoom-200-1440x900.png" });
     await zoomContext.close();
   });
+  await check(
+    "Предоставленные фоны: исходники и выбор ориентации",
+    async () => {
+      for (const width of [1440, 390]) {
+        const ctx = await browser.newContext({
+          viewport: { width, height: width === 390 ? 844 : 900 },
+        });
+        const p = await ctx.newPage();
+        p.on("pageerror", (e) => errors.push(e.message));
+        await p.goto(base);
+        for (const role of ["auth", "onboarding", "home"]) {
+          await p.evaluate((role) => {
+            const s = JSON.parse(localStorage.getItem("luma-studios-v1"));
+            s.signedIn = role !== "auth";
+            s.onboarded = role === "home";
+            localStorage.setItem("luma-studios-v1", JSON.stringify(s));
+            location.hash = "/";
+          }, role);
+          await p.reload();
+          const scene = p.locator("picture.scene");
+          await scene.waitFor();
+          await scene.locator("img").evaluate((el) => el.decode());
+          await p.waitForTimeout(300);
+          const meta = await scene.evaluate((el) => ({
+            src: el.querySelector("img").currentSrc,
+            width: el.querySelector("img").naturalWidth,
+            fit: getComputedStyle(el.querySelector("img")).objectFit,
+            opacity: getComputedStyle(el).opacity,
+            filter: getComputedStyle(el).filter,
+          }));
+          assert(
+            meta.src.endsWith(
+              `/assets/backgrounds/${role}-${width === 390 ? "mobile" : "desktop"}.jpg`,
+            ),
+          );
+          assert.equal(meta.width, width === 390 ? 941 : 1672);
+          assert.equal(meta.fit, "cover");
+          assert.equal(meta.opacity, "1");
+          assert.equal(meta.filter, "none");
+          assert(
+            await p.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth + 1,
+            ),
+          );
+          await p.screenshot({
+            path: `${out}/background-${role}-${width}.png`,
+          });
+        }
+        await ctx.close();
+      }
+    },
+  );
   await check("JS: ошибок нет", async () => assert.deepEqual(errors, []));
 } catch (e) {
   console.error(e.stack);

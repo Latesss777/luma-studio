@@ -61,6 +61,14 @@ function App() {
       im.src = cover(b);
       im.decode().catch(() => {});
     });
+    const orientation = window.matchMedia("(max-width: 600px)").matches
+      ? "mobile"
+      : "desktop";
+    ["onboarding", "home"].forEach((name) => {
+      const im = new Image();
+      im.src = `/assets/backgrounds/${name}-${orientation}.jpg`;
+      im.decode().catch(() => {});
+    });
   }, []);
   if (!state.signedIn) return <Auth />;
   if (!state.onboarded) return <Onboarding />;

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { books, findBook } from "../data/books";
 import { go, useStore } from "../shared/store";
-import { Cover, IconButton, Button, Tags } from "../shared/ui";
+import { Cover, IconButton, Button, Tags, Scene } from "../shared/ui";
 export default function Home() {
   const { state } = useStore();
   const [index, setIndex] = useState(0);
@@ -54,10 +54,7 @@ export default function Home() {
           }
         }}
       >
-        <div
-          className="stage-backdrop"
-          style={{ backgroundImage: `url(/assets/${b.id}.jpg)` }}
-        />
+        <Scene name="home" className="stage-backdrop" />
         <div className="poster-stage">
           {books.map((book, i) => {
             const offset = ((i - index + books.length + 3) % books.length) - 3;

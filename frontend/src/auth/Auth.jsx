@@ -7,7 +7,7 @@ import {
   Check,
   ExternalLink,
 } from "lucide-react";
-import { Brand, Button } from "../shared/ui";
+import { Brand, Button, Scene } from "../shared/ui";
 import { useStore } from "../shared/store";
 export default function Auth() {
   const { state, update } = useStore();
@@ -71,10 +71,10 @@ export default function Auth() {
   };
   return (
     <main className="auth-screen">
-      <div
+      <Scene
+        name="auth"
         className="auth-scene"
-        role="img"
-        aria-label="Лесная живопись с обложки издания Алисы"
+        label="Космический пейзаж из предоставленных фонов"
       />
       <div className="auth-top">
         <Brand />

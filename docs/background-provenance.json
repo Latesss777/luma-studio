@@ -1,0 +1,168 @@
+{
+  "archive": "Luma_Studios_backgrounds_under_30MB.zip",
+  "archiveBytes": 26436800,
+  "allTwentyImagesVisuallyInspected": true,
+  "copiesAreByteIdentical": true,
+  "images": [
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_13-1.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1056121,
+      "sha256": "e1741c5bb7a21094b09a6fa3820994ce5ec0a893c92dbaedb3a19c64f7b47813",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_14-2.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1221067,
+      "sha256": "97ea614bc086cd1845f5cec98c0aa73bd84e7f7d06be64b70e6366511614199f",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_15-3.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1199497,
+      "sha256": "f3d73397b9663c82cf62a10d2ee2281adfaa0723319084de88ac238c476487be",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_16-4.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1199292,
+      "sha256": "e67dc616e2a4bbd40e9145ecc5ab88e0db9bf003c7cd84f17d154005acecba30",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_17-5.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1178542,
+      "sha256": "bf69c72a724fb59588fa76ffe0386a8b1ae5caee57182261569bd5e6ba6bec17",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_18-6.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1091960,
+      "sha256": "f550274a054f27d7f1d76236a54ff95c7fd9a6ce4ceacc3f47b32455247428f8",
+      "usedAs": "frontend/public/assets/backgrounds/onboarding-mobile.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_19-7.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1249233,
+      "sha256": "5f97d579a8b6d22423d3d5e4d4884caf2078cd42c232b92167c647b99380e973",
+      "usedAs": "frontend/public/assets/backgrounds/home-mobile.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_19-8.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1246479,
+      "sha256": "0caf98b690c3c6987885ed82f90a6f7cf88ebd6cf141656d79dca53a42ddca85",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_21-9.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1249982,
+      "sha256": "07e78aab14d37cf5078a850c94b7cae00971e007ae36e7023119730dc794b1b4",
+      "usedAs": "frontend/public/assets/backgrounds/auth-mobile.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 24 окт. 2026 г., 14_24_22-10.jpg",
+      "width": 941,
+      "height": 1672,
+      "bytes": 1151236,
+      "sha256": "670a38d1947def2e2bd7bc964cdf28cbeb9acc8a5817482d80e108f89d5a5c88",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_09-1.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1484759,
+      "sha256": "8af1535c96f61d87e3b81a89cbd9d46b2cda40dc05074b97ab845576bdb9d26f",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_10-2.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1527260,
+      "sha256": "88ac8fbe8b636f5c27bcdc26a2f5f490dcca269bc62265fc246d84547bf117d0",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_11-3.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1404392,
+      "sha256": "f0871a9383e520e461ebda9e9582d8103ea57436f6f1518549206b5a4957a441",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_12-4.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1400817,
+      "sha256": "dc4d8240ab745353ce1082a08c899049b184fc9faabda797a4881f10fd3ffc62",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_13-5.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1498193,
+      "sha256": "436f2851837f6e171e6c9fe53302e722a1731cab620c2524a959e368dd722767",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_13-6.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1380262,
+      "sha256": "b3c39f7a534c49ade92a871e4d0f9cd0a585327fdcef2ea3834e7571037c940a",
+      "usedAs": "frontend/public/assets/backgrounds/onboarding-desktop.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_14-7.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1609106,
+      "sha256": "8a01432fdb87067b9655eae098978d42970060a57d48d7d618e27befce71622d",
+      "usedAs": "frontend/public/assets/backgrounds/home-desktop.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_15-8.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1431558,
+      "sha256": "ce3e0fc39da86bc3a73c1f8d57cca9f5ae9939ff8cd1711498b300bd9f7084da",
+      "usedAs": null
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_16-9.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1304897,
+      "sha256": "435d12bc0b41b567a628c5d1f932c384ec7ad8279b9d6a1b571416bfa32330b0",
+      "usedAs": "frontend/public/assets/backgrounds/auth-desktop.jpg"
+    },
+    {
+      "source": "Изображение ChatGPT 25 окт. 2026 г., 11_12_17-10.jpg",
+      "width": 1672,
+      "height": 941,
+      "bytes": 1546921,
+      "sha256": "9d98f10ec80aa37187009250115d35b4e47f951490f6eb38a519bee752f48eb0",
+      "usedAs": null
+    }
+  ]
+}

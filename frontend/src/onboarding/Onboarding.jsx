@@ -9,6 +9,7 @@ import {
   Card,
   formatIcons,
   genreIcons,
+  Scene,
 } from "../shared/ui";
 export default function Onboarding() {
   const { state, update } = useStore();
@@ -48,6 +49,7 @@ export default function Onboarding() {
   ];
   return (
     <main className="onboarding">
+      <Scene name="onboarding" className="onboarding-scene" />
       <header>
         <Brand />
         <button className="text-link" onClick={finish}>
