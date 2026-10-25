@@ -1,0 +1,26 @@
+{
+  "name": "luma-studios",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 frontend",
+    "build": "vite build frontend",
+    "preview": "vite preview --host 0.0.0.0 frontend",
+    "test": "node scripts/verify.mjs",
+    "record": "node scripts/record.mjs",
+    "postinstall": "node scripts/assets.mjs",
+    "assets": "node scripts/assets.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "0.468.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "prettier": "3.6.2",
+    "undici": "^7.30.1",
+    "vite": "6.4.1"
+  }
+}

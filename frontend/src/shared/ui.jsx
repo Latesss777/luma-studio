@@ -1,0 +1,307 @@
+import React from "react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Check,
+  Plus,
+  Star,
+  BookOpen,
+  Headphones,
+  PanelsTopLeft,
+  ScrollText,
+  Sparkles,
+  Compass,
+  Heart,
+  Orbit,
+  Search,
+  Skull,
+} from "lucide-react";
+import { cover, findBook } from "../data/books";
+import { go, useStore } from "./store";
+export const formatIcons = [BookOpen, PanelsTopLeft, ScrollText, Headphones];
+export const genreIcons = [Sparkles, Search, Heart, Orbit, Skull, Compass];
+export function Brand({ large = false }) {
+  return (
+    <div className={`brand ${large ? "large" : ""}`} aria-label="Luma Studios">
+      <span>Studios</span>
+      <strong>Luma</strong>
+    </div>
+  );
+}
+export function Button({
+  children,
+  icon: Icon,
+  secondary = false,
+  className = "",
+  ...props
+}) {
+  return (
+    <button
+      className={`button ${secondary ? "secondary" : ""} ${className}`}
+      {...props}
+    >
+      {Icon && <Icon size={18} aria-hidden="true" />}
+      {children}
+    </button>
+  );
+}
+export function IconButton({ label, icon: Icon, ...props }) {
+  return (
+    <button className="icon-button" aria-label={label} title={label} {...props}>
+      <Icon size={21} aria-hidden="true" />
+    </button>
+  );
+}
+export function Back({ to = "/", label = "Назад" }) {
+  return (
+    <button className="back" onClick={() => go(to)}>
+      <ArrowLeft size={19} aria-hidden="true" />
+      {label}
+    </button>
+  );
+}
+export function PageHead({ title, sub, children }) {
+  return (
+    <div className="page-head">
+      <div>
+        <h1>{title}</h1>
+        {sub && <p className="muted">{sub}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
+export function Cover({ book, ...props }) {
+  return (
+    <img
+      className="cover"
+      src={cover(book)}
+      alt={`Обложка: ${book.original}`}
+      width="1400"
+      height="2100"
+      decoding="async"
+      {...props}
+    />
+  );
+}
+export function Card({ book, selectable = false, selected = false, onSelect }) {
+  return (
+    <article className="book-card">
+      <button
+        className="poster-button"
+        onClick={() =>
+          selectable ? onSelect(book.id) : go("/title/" + book.id)
+        }
+        aria-label={
+          selectable
+            ? `${selected ? "Отменить выбор" : "Выбрать"}: ${book.title}`
+            : `Открыть: ${book.title}`
+        }
+        aria-pressed={selectable ? selected : undefined}
+      >
+        <Cover book={book} />
+        {selectable && (
+          <span className="selection">
+            {selected ? <Check size={18} /> : <Plus size={18} />}
+          </span>
+        )}
+      </button>
+      <button
+        className="card-title"
+        onClick={() =>
+          selectable ? onSelect(book.id) : go("/title/" + book.id)
+        }
+      >
+        {book.title}
+      </button>
+      <p>{book.author}</p>
+      <small>English · {book.id === "alice" ? "Текст и аудио" : "Текст"}</small>
+    </article>
+  );
+}
+export function Empty({ title = "Пока ничего нет", text, children }) {
+  return (
+    <div className="empty">
+      <BookOpen size={30} strokeWidth={1.2} />
+      <h3>{title}</h3>
+      {text && <p>{text}</p>}
+      {children}
+    </div>
+  );
+}
+export function SearchField({
+  value,
+  onChange,
+  placeholder = "Название или автор",
+  label = "Поиск произведений",
+}) {
+  return (
+    <div className="search-field">
+      <Search size={18} aria-hidden="true" />
+      <input
+        aria-label={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        type="search"
+      />
+    </div>
+  );
+}
+export function Tags({ book }) {
+  return (
+    <div className="tags">
+      <button
+        style={{ "--tag": book.color }}
+        onClick={() => go("/catalog?genre=" + encodeURIComponent(book.genre))}
+      >
+        {book.genre}
+      </button>
+      <span>English</span>
+    </div>
+  );
+}
+export function Rating({ id }) {
+  const { state } = useStore();
+  const rs = state.reviews[id] || [];
+  return (
+    <span className="rating">
+      <Star
+        size={16}
+        fill={rs.length ? "#e6c563" : "none"}
+        stroke={rs.length ? "#e6c563" : "currentColor"}
+      />
+      {rs.length
+        ? `${(rs.reduce((a, r) => a + r.score, 0) / rs.length).toFixed(1)} / 10 · ваши отзывы`
+        : "Пока без оценок"}
+    </span>
+  );
+}
+export function ShelfPicker({ id }) {
+  const { state, update, setToast } = useStore();
+  return (
+    <label className="inline-select">
+      На полку
+      <select
+        aria-label="Добавить на полку"
+        value=""
+        onChange={(e) => {
+          if (!e.target.value) return;
+          update((s) => ({
+            shelves: s.shelves.map((sh) =>
+              sh.id === e.target.value
+                ? { ...sh, books: [...new Set([...sh.books, id])] }
+                : sh,
+            ),
+            library: [...new Set([...s.library, id])],
+            archive: s.archive.filter((x) => x !== id),
+          }));
+          setToast("Произведение добавлено на полку");
+        }}
+      >
+        <option value="">Выбрать полку</option>
+        {state.shelves.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
+      {!state.shelves.length && (
+        <button className="text-link" onClick={() => go("/library")}>
+          Создать полку
+        </button>
+      )}
+    </label>
+  );
+}
+export function Community({ id }) {
+  const { state, update, setToast } = useStore();
+  const [note, setNote] = React.useState(state.notes[id] || "");
+  const [review, setReview] = React.useState("");
+  const [score, setScore] = React.useState(8);
+  return (
+    <div className="community">
+      <section>
+        <h2>Мои заметки</h2>
+        <textarea
+          aria-label="Текст заметки"
+          placeholder="Что хочется запомнить?"
+          value={note}
+          maxLength={4000}
+          onChange={(e) => setNote(e.target.value)}
+        />
+        <Button
+          secondary
+          onClick={() => {
+            update((s) => ({ notes: { ...s.notes, [id]: note } }));
+            setToast("Заметка сохранена на этом устройстве");
+          }}
+        >
+          Сохранить заметку
+        </Button>
+      </section>
+      <section>
+        <h2>Отзывы</h2>
+        {(state.reviews[id] || []).map((r) => (
+          <blockquote key={r.id}>
+            <span className="rating">
+              <Star size={15} fill="#e6c563" stroke="#e6c563" />
+              {r.score} / 10
+            </span>
+            <p>{r.text}</p>
+            <small>{state.profile.name} · локальный отзыв</small>
+          </blockquote>
+        ))}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!review.trim()) return;
+            update((s) => ({
+              reviews: {
+                ...s.reviews,
+                [id]: [
+                  ...(s.reviews[id] || []),
+                  {
+                    id: crypto.randomUUID(),
+                    text: review.trim(),
+                    score: Number(score),
+                  },
+                ],
+              },
+            }));
+            setReview("");
+            setToast("Отзыв сохранён на этом устройстве");
+          }}
+        >
+          <textarea
+            aria-label="Текст отзыва"
+            placeholder="Поделись впечатлением"
+            required
+            maxLength={2000}
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+          />
+          <div className="row">
+            <label>
+              Оценка{" "}
+              <select
+                aria-label="Оценка"
+                value={score}
+                onChange={(e) => setScore(e.target.value)}
+              >
+                {Array.from({ length: 10 }, (_, i) => (
+                  <option key={i} value={i + 1}>
+                    {i + 1} / 10
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Button type="submit" secondary>
+              Сохранить отзыв
+            </Button>
+          </div>
+        </form>
+      </section>
+    </div>
+  );
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "path": "frontend/public/assets/alice.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/images/cover.jpg",
+    "sha256": "f5c015ba2bc022a07f7f13ebc6b509ca0d09cf8d9ad870c85715ebcb3e9c4bff"
+  },
+  {
+    "path": "frontend/public/assets/alice-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/src/epub/images/cover.svg",
+    "sha256": "3d6edde5329e6c6a3c4d32e9622a95e000b259cdfda7e2b484a84a1becb1617b"
+  },
+  {
+    "path": "frontend/public/assets/frankenstein.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/mary-shelley_frankenstein/master/images/cover.jpg",
+    "sha256": "415c868ece504e9eb1f1f2e04dacb9f813fdd3ad6a1c63a07143294fda39095e"
+  },
+  {
+    "path": "frontend/public/assets/frankenstein-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/mary-shelley_frankenstein/master/src/epub/images/cover.svg",
+    "sha256": "e82be2b6d8f10955cdeb9f64e703997be1c7ef81206eb537f11502d9e14e3fb5"
+  },
+  {
+    "path": "frontend/public/assets/dracula.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/bram-stoker_dracula/master/images/cover.jpg",
+    "sha256": "a491fa12468736005f4a00de0cc598dc8b8d94c44edc517759fd1fcd53e361de"
+  },
+  {
+    "path": "frontend/public/assets/dracula-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/bram-stoker_dracula/master/src/epub/images/cover.svg",
+    "sha256": "ec758027189f7bdd6985a43a684b0582269dbc8a0ac3aa2c5613d7332ddd2a91"
+  },
+  {
+    "path": "frontend/public/assets/pride.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/jane-austen_pride-and-prejudice/master/images/cover.jpg",
+    "sha256": "49f0a949bc6f30b223f7ce597d6f29496f9c75f4c188bc05a65fe4247706735c"
+  },
+  {
+    "path": "frontend/public/assets/pride-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/jane-austen_pride-and-prejudice/master/src/epub/images/cover.svg",
+    "sha256": "6cfccead84fec658a5f0006aad6fe951408d287107ec359504e6231b9c4c12d9"
+  },
+  {
+    "path": "frontend/public/assets/sherlock.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/master/images/cover.jpg",
+    "sha256": "6f3991d8d1568dcc22e790275f3971f8c0f9dbf7aad9b8847ba15cfe6d5613bf"
+  },
+  {
+    "path": "frontend/public/assets/sherlock-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/master/src/epub/images/cover.svg",
+    "sha256": "1e2d091a9948879734075c1f49026ca39cb726ad8e2d33ba204b277ec2250f4d"
+  },
+  {
+    "path": "frontend/public/assets/moby.jpg",
+    "url": "https://raw.githubusercontent.com/standardebooks/herman-melville_moby-dick/master/images/cover.jpg",
+    "sha256": "7592ca6be08aaa9f64788070b90839c4fec5ba023824580a34a3ddae3734b67e"
+  },
+  {
+    "path": "frontend/public/assets/moby-cover.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/herman-melville_moby-dick/master/src/epub/images/cover.svg",
+    "sha256": "3a1755a68252a8c0bb923527959911ab632917767b513a10b6927ac558483828"
+  },
+  {
+    "path": "frontend/public/assets/illustration-2.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/src/epub/images/illustration-2.svg",
+    "sha256": "a2cc837a6c545bc1860924a6e627ff99d3eb9bf02fa69e8be4c5eab856929607"
+  },
+  {
+    "path": "frontend/public/assets/illustration-3.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/src/epub/images/illustration-3.svg",
+    "sha256": "abd6b83d6738bbdceadf3ecc30064ef0c1eed542f6cb88932f6f6e240b1c0103"
+  },
+  {
+    "path": "frontend/public/assets/illustration-4.svg",
+    "url": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/src/epub/images/illustration-4.svg",
+    "sha256": "ad28cdd1d7c5b4dd0f1fd423af56a033aedf80670c293c8e6c42c8f9125ff411"
+  }
+]

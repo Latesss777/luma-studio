@@ -1,0 +1,44 @@
+{
+  "alice": {
+    "repo": "https://github.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel",
+    "artist": [
+      "Ivan Ivanovich Shishkin"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/src/epub/content.opf"
+  },
+  "frankenstein": {
+    "repo": "https://github.com/standardebooks/mary-shelley_frankenstein",
+    "artist": [
+      "Giuseppe Arcimboldo"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/mary-shelley_frankenstein/master/src/epub/content.opf"
+  },
+  "dracula": {
+    "repo": "https://github.com/standardebooks/bram-stoker_dracula",
+    "artist": [
+      "Joseph Magnus Stäck"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/bram-stoker_dracula/master/src/epub/content.opf"
+  },
+  "pride": {
+    "repo": "https://github.com/standardebooks/jane-austen_pride-and-prejudice",
+    "artist": [
+      "Edmund Blair Leighton"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/jane-austen_pride-and-prejudice/master/src/epub/content.opf"
+  },
+  "sherlock": {
+    "repo": "https://github.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes",
+    "artist": [
+      "Thomas Eakins"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/master/src/epub/content.opf"
+  },
+  "moby": {
+    "repo": "https://github.com/standardebooks/herman-melville_moby-dick",
+    "artist": [
+      "Albert Pinkham Ryder"
+    ],
+    "metadata": "https://raw.githubusercontent.com/standardebooks/herman-melville_moby-dick/master/src/epub/content.opf"
+  }
+}

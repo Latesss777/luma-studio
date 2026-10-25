@@ -1,0 +1,10 @@
+node_modules/
+frontend/dist/
+work/
+output/
+*.log
+.env*
+# Public source images are downloaded and hash-verified during npm ci.
+frontend/public/assets/*.jpg
+frontend/public/assets/*-cover.svg
+frontend/public/assets/illustration-*.svg

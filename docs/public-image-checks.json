@@ -1,0 +1,44 @@
+[
+  {
+    "file": "frontend/public/assets/alice.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/lewis-carroll_alices-adventures-in-wonderland_john-tenniel/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "f5c015ba2bc022a07f7f13ebc6b509ca0d09cf8d9ad870c85715ebcb3e9c4bff",
+    "bytes": 837932
+  },
+  {
+    "file": "frontend/public/assets/frankenstein.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/mary-shelley_frankenstein/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "415c868ece504e9eb1f1f2e04dacb9f813fdd3ad6a1c63a07143294fda39095e",
+    "bytes": 458438
+  },
+  {
+    "file": "frontend/public/assets/dracula.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/bram-stoker_dracula/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "a491fa12468736005f4a00de0cc598dc8b8d94c44edc517759fd1fcd53e361de",
+    "bytes": 182968
+  },
+  {
+    "file": "frontend/public/assets/pride.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/jane-austen_pride-and-prejudice/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "49f0a949bc6f30b223f7ce597d6f29496f9c75f4c188bc05a65fe4247706735c",
+    "bytes": 463470
+  },
+  {
+    "file": "frontend/public/assets/sherlock.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/arthur-conan-doyle_the-adventures-of-sherlock-holmes/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "6f3991d8d1568dcc22e790275f3971f8c0f9dbf7aad9b8847ba15cfe6d5613bf",
+    "bytes": 1239398
+  },
+  {
+    "file": "frontend/public/assets/moby.jpg",
+    "public_source": "https://raw.githubusercontent.com/standardebooks/herman-melville_moby-dick/master/images/cover.jpg",
+    "same_bytes": true,
+    "sha256": "7592ca6be08aaa9f64788070b90839c4fec5ba023824580a34a3ddae3734b67e",
+    "bytes": 728861
+  }
+]
