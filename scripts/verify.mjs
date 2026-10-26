@@ -735,6 +735,186 @@ try {
       }
     },
   );
+  await check(
+    "Оригинальный PNG: целостность, пропорции, Studios, темы и размеры",
+    async () => {
+      const { createHash } = await import("node:crypto");
+      assert.equal(
+        createHash("sha256")
+          .update(
+            await fs.readFile("frontend/public/assets/brand/luma-original.png"),
+          )
+          .digest("hex"),
+        "1edfd0e8f521c555c9c7ff7634db19c5898531562d90ff5532da7bff6ba3e3b7",
+      );
+      for (const width of [1440, 900, 390]) {
+        const ctx = await browser.newContext({
+          viewport: { width, height: width === 390 ? 844 : 900 },
+        });
+        const p = await ctx.newPage();
+        p.on("pageerror", (e) => errors.push(e.message));
+        await p.goto(base);
+        for (const theme of ["dark", "light"]) {
+          for (const screen of ["auth", "onboarding", "home"]) {
+            await p.evaluate(
+              ({ screen, theme }) => {
+                const s = JSON.parse(localStorage.getItem("luma-studios-v1"));
+                Object.assign(s, {
+                  signedIn: screen !== "auth",
+                  onboarded: screen === "home",
+                  theme,
+                });
+                localStorage.setItem("luma-studios-v1", JSON.stringify(s));
+              },
+              { screen, theme },
+            );
+            await p.reload();
+            await p
+              .locator(".brand-art img")
+              .first()
+              .evaluate((el) => el.decode());
+            const brands = p.getByRole("img", {
+              name: "Luma Studios",
+              exact: true,
+            });
+            const visible = await brands.filter({ visible: true }).all();
+            // The phone uses bottom navigation, without the desktop sidebar.
+            assert.equal(
+              visible.length,
+              screen === "home" && width === 390
+                ? 0
+                : screen === "auth"
+                  ? 2
+                  : 1,
+            );
+            for (const brand of visible) {
+              const meta = await brand.evaluate((el) => {
+                const art = el
+                  .querySelector(".brand-art")
+                  .getBoundingClientRect();
+                const img = el.querySelector("img");
+                const rect = img.getBoundingClientRect();
+                const studios = el
+                  .querySelector(".brand-studios")
+                  .getBoundingClientRect();
+                return {
+                  src: img.currentSrc,
+                  naturalWidth: img.naturalWidth,
+                  imageRatio: rect.width / rect.height,
+                  cropRatio: art.width / art.height,
+                  studiosAbove: studios.bottom <= art.top + 1,
+                  filter: getComputedStyle(img).filter,
+                };
+              });
+              assert(meta.src.endsWith("/assets/brand/luma-original.png"));
+              assert.equal(meta.naturalWidth, 1254);
+              assert(
+                Math.abs(meta.imageRatio - 1) < 0.001,
+                "original PNG stretched",
+              );
+              assert(Math.abs(meta.cropRatio - 1033 / 344) < 0.01);
+              assert(
+                meta.studiosAbove,
+                "Studios must be above the original logo",
+              );
+              assert.equal(
+                meta.filter,
+                theme === "light" && screen === "home" ? "invert(1)" : "none",
+              );
+            }
+            assert(
+              await p.evaluate(
+                () => document.documentElement.scrollWidth <= innerWidth + 1,
+              ),
+            );
+            if (theme === "light" && width !== 900)
+              await p.screenshot({
+                path: `${out}/logo-${screen}-${theme}-${width}.png`,
+              });
+          }
+        }
+        await ctx.close();
+      }
+    },
+  );
+  await check(
+    "Приветствие → оригинальный знак → главная; reduced-motion",
+    async () => {
+      for (const reducedMotion of ["no-preference", "reduce"]) {
+        const ctx = await browser.newContext({
+          viewport: { width: 390, height: 844 },
+          reducedMotion,
+        });
+        const p = await ctx.newPage();
+        p.on("pageerror", (e) => errors.push(e.message));
+        await p.addInitScript(() =>
+          localStorage.setItem(
+            "luma-studios-v1",
+            JSON.stringify({
+              signedIn: true,
+              onboarded: false,
+              favorites: ["alice"],
+            }),
+          ),
+        );
+        await p.goto(base);
+        await p
+          .getByRole("button", { name: "Настроить позже", exact: true })
+          .click();
+        await p.getByRole("heading", { name: "Привет, Алекс" }).waitFor();
+        assert(
+          await p
+            .locator(".greeting .brand-art img")
+            .evaluate((el) => el.complete && el.naturalWidth === 1254),
+        );
+        await p.waitForTimeout(500);
+        if (reducedMotion === "no-preference")
+          await p.screenshot({ path: out + "/logo-greeting.png" });
+        await p.locator(".launch-transition").waitFor();
+        assert(
+          await p
+            .getByRole("heading", { name: "Для тебя", exact: true })
+            .isVisible(),
+        );
+        const motion = await p.locator(".launch-transition").evaluate((el) => {
+          const art = el.querySelector(".brand-mark");
+          const animation = art.getAnimations()[0];
+          const duration = animation.effect.getTiming().duration;
+          animation.pause();
+          animation.currentTime = 0;
+          const small = art.getBoundingClientRect();
+          animation.currentTime = duration * 0.75;
+          const large = art.getBoundingClientRect();
+          const img = art.querySelector("img").getBoundingClientRect();
+          return {
+            duration,
+            growth: large.width / small.width,
+            imageRatio: img.width / img.height,
+          };
+        });
+        assert(Math.abs(motion.imageRatio - 1) < 0.001);
+        if (reducedMotion === "reduce") assert(motion.duration <= 1);
+        else {
+          assert(motion.growth > 10, "logo mark should enlarge uniformly");
+          await p.screenshot({ path: out + "/logo-launch.png" });
+        }
+        await p.locator(".launch-transition").waitFor({ state: "detached" });
+        const s = await p.evaluate(() =>
+          JSON.parse(localStorage.getItem("luma-studios-v1")),
+        );
+        assert(s.onboarded && s.library.includes("alice"));
+        await p
+          .getByRole("button", { name: "Следующее произведение", exact: true })
+          .click();
+        assert(
+          (await p.locator(".carousel-caption h2").textContent()).includes(
+            "Шерлока",
+          ),
+        );
+        await ctx.close();
+      }
+    },
+  );
   await check("JS: ошибок нет", async () => assert.deepEqual(errors, []));
 } catch (e) {
   console.error(e.stack);

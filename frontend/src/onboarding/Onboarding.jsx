@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowLeft, Check, ArrowRight } from "lucide-react";
 import { books, formats, genres } from "../data/books";
 import { useStore } from "../shared/store";
@@ -11,7 +11,7 @@ import {
   genreIcons,
   Scene,
 } from "../shared/ui";
-export default function Onboarding() {
+export default function Onboarding({ onComplete }) {
   const { state, update } = useStore();
   const [step, setStep] = useState(0);
   const [q, setQ] = useState("");
@@ -22,16 +22,12 @@ export default function Onboarding() {
         ? s[key].filter((v) => v !== value)
         : [...s[key], value],
     }));
-  const finish = () => {
-    setGreet(true);
-    setTimeout(() => {
-      update((s) => ({
-        onboarded: true,
-        library: [...new Set([...s.library, ...s.favorites])],
-      }));
-      location.hash = "/";
-    }, 1900);
-  };
+  const finish = () => setGreet(true);
+  useEffect(() => {
+    if (!greet) return;
+    const timer = setTimeout(onComplete, 1600);
+    return () => clearTimeout(timer);
+  }, [greet, onComplete]);
   if (greet)
     return (
       <main className="greeting">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   House,
@@ -9,7 +9,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Provider, useStore, useRoute, go } from "./shared/store";
-import { Brand } from "./shared/ui";
+import { Brand, BrandArt } from "./shared/ui";
 import { books, cover } from "./data/books";
 import Auth from "./auth/Auth";
 import Onboarding from "./onboarding/Onboarding";
@@ -51,7 +51,21 @@ class Boundary extends React.Component {
   }
 }
 function App() {
-  const { state } = useStore();
+  const { state, update } = useStore();
+  const [launching, setLaunching] = useState(false);
+  const completeOnboarding = useCallback(() => {
+    setLaunching(true);
+    update((s) => ({
+      onboarded: true,
+      library: [...new Set([...s.library, ...s.favorites])],
+    }));
+    go("/");
+  }, [update]);
+  useEffect(() => {
+    if (!launching) return;
+    const timer = setTimeout(() => setLaunching(false), 1200);
+    return () => clearTimeout(timer);
+  }, [launching]);
   const route = useRoute();
   const [path, query = ""] = route.split("?");
   const [, page, id] = path.split("/");
@@ -71,11 +85,16 @@ function App() {
     });
   }, []);
   if (!state.signedIn) return <Auth />;
-  if (!state.onboarded) return <Onboarding />;
+  if (!state.onboarded) return <Onboarding onComplete={completeOnboarding} />;
   if (page === "reader")
     return <Reader key={id + query} id={id} query={query} />;
   return (
     <div className="app-shell">
+      {launching && (
+        <div className="launch-transition" aria-hidden="true">
+          <BrandArt mark />
+        </div>
+      )}
       <a
         className="skip-link"
         href="#main-content"

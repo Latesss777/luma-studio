@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 const KEY = "luma-studios-v1";
 const initial = {
   signedIn: false,
@@ -54,11 +60,14 @@ export function Provider({ children }) {
     const t = setTimeout(() => setToast(""), 3600);
     return () => clearTimeout(t);
   }, [toast]);
-  const update = (patch) =>
-    setState((s) => ({
-      ...s,
-      ...(typeof patch === "function" ? patch(s) : patch),
-    }));
+  const update = useCallback(
+    (patch) =>
+      setState((s) => ({
+        ...s,
+        ...(typeof patch === "function" ? patch(s) : patch),
+      })),
+    [],
+  );
   const addLibrary = (id) =>
     update((s) => ({
       library: [...new Set([...s.library, id])],

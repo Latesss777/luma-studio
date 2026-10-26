@@ -43,11 +43,31 @@ export function Scene({ name, className = "", label }) {
     </picture>
   );
 }
+// The original 1254×1254 PNG stays intact. CSS crops only its empty canvas.
+export function BrandArt({ mark = false }) {
+  return (
+    <span
+      className={`brand-art ${mark ? "brand-mark" : ""}`}
+      aria-hidden="true"
+    >
+      <img
+        src="/assets/brand/luma-original.png"
+        alt=""
+        width="1254"
+        height="1254"
+      />
+    </span>
+  );
+}
 export function Brand({ large = false }) {
   return (
-    <div className={`brand ${large ? "large" : ""}`} aria-label="Luma Studios">
-      <span>Studios</span>
-      <strong>Luma</strong>
+    <div
+      className={`brand ${large ? "large" : ""}`}
+      role="img"
+      aria-label="Luma Studios"
+    >
+      <span className="brand-studios">Studios</span>
+      <BrandArt />
     </div>
   );
 }

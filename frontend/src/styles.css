@@ -196,33 +196,56 @@ small,
   white-space: nowrap;
   color: var(--muted);
 }
+/* Original logo; only the transparent canvas is cropped, without stretching. */
 .brand {
+  --brand-width: 116px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
   line-height: 1;
   user-select: none;
 }
-.brand span {
+.brand-studios {
   font-size: 9px;
   letter-spacing: 1.4px;
-  margin: 0 0 5px 4px;
+  margin: 0 0 7px 4px;
   font-weight: 500;
 }
-.brand strong {
-  font-size: 36px;
-  letter-spacing: -3px;
-  line-height: 0.95;
-  font-weight: 450;
+.brand-art {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: var(--brand-width, 116px);
+  max-width: 100%;
+  aspect-ratio: 1033 / 344;
+  flex-shrink: 0;
 }
-.brand.large strong {
-  font-size: 83px;
-  letter-spacing: -7px;
+.brand-art img {
+  display: block;
+  position: absolute;
+  width: calc(100% * 1254 / 1033);
+  max-width: none;
+  height: auto;
+  left: calc(-100% * 115 / 1033);
+  top: calc(-100% * 455 / 344);
+  filter: var(--brand-filter, none);
 }
-.brand.large span {
+.brand.large {
+  --brand-width: 280px;
+}
+.brand.large .brand-studios {
   font-size: 14px;
   letter-spacing: 3px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+}
+.brand-mark {
+  width: 88px;
+  aspect-ratio: 1;
+}
+.brand-mark img {
+  width: calc(100% * 1254 / 344);
+  left: calc(-100% * 115 / 344);
 }
 .brand-button {
   padding: 0;
@@ -455,6 +478,7 @@ input:-webkit-autofill:focus {
 }
 /* Auth */
 .auth-screen {
+  --brand-filter: none;
   min-height: 100svh;
   background: #000;
   color: #f7f7f7;
@@ -645,6 +669,7 @@ input:-webkit-autofill:focus {
 }
 /* Onboarding */
 .onboarding {
+  --brand-filter: none;
   min-height: 100svh;
   padding: 34px 6vw 50px;
   background: var(--bg);
@@ -772,7 +797,7 @@ input:-webkit-autofill:focus {
   align-items: center;
   min-height: 100svh;
   overflow: hidden;
-  animation: greet 1.9s both;
+  animation: greet 1.6s both;
 }
 .greeting h1 {
   margin: 42px 0 12px;
@@ -2299,6 +2324,7 @@ th {
 }
 /* Light */
 :root[data-theme="light"] {
+  --brand-filter: invert(1);
   --bg: #fff;
   --fg: #161616;
   --surface: #f5f5f5;
@@ -2344,16 +2370,52 @@ th {
 @keyframes greet {
   0% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(12px);
   }
-  30%,
-  75% {
+  25%,
+  80% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: scale(1.06);
+    transform: translateY(-8px);
+  }
+}
+.launch-transition {
+  --brand-filter: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+  background: #000;
+  animation: launch-reveal 1.2s ease both;
+}
+.launch-transition .brand-mark {
+  animation: launch-zoom 1.2s cubic-bezier(0.55, 0.05, 0.72, 0.35) both;
+  will-change: transform;
+}
+@keyframes launch-zoom {
+  0% {
+    transform: scale(0.9);
+  }
+  18% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(60);
+  }
+}
+@keyframes launch-reveal {
+  0%,
+  64% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 @media (min-width: 1700px) {
@@ -2461,11 +2523,10 @@ th {
     margin: 0 0 50px;
     align-self: center;
   }
-  .sidebar .brand strong {
-    font-size: 26px;
-    letter-spacing: -2px;
+  .sidebar .brand {
+    --brand-width: 56px;
   }
-  .sidebar .brand span {
+  .sidebar .brand-studios {
     font-size: 7px;
   }
   .sidebar-bottom > button {
@@ -2654,10 +2715,10 @@ th {
     right: 24px;
     top: 23px;
   }
-  .auth-top .brand strong {
-    font-size: 30px;
+  .auth-top .brand {
+    --brand-width: 96px;
   }
-  .auth-top .brand span {
+  .auth-top .brand-studios {
     font-size: 7px;
   }
   .auth-top .quiet-pill {
@@ -2678,8 +2739,8 @@ th {
   .auth-panel > .brand {
     margin-bottom: 25px;
   }
-  .auth-panel .brand.large strong {
-    font-size: 76px;
+  .auth-panel .brand.large {
+    --brand-width: 250px;
   }
   .auth-panel > .muted {
     font-size: 11px;
@@ -3662,8 +3723,8 @@ th {
   .auth-panel > .brand {
     margin: 0 0 20px;
   }
-  .auth-panel .brand.large strong {
-    font-size: 64px;
+  .auth-panel .brand.large {
+    --brand-width: 220px;
   }
   .auth-panel h1 {
     font-size: 25px;

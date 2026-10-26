@@ -1,0 +1,18 @@
+{
+  "archive": "логотип-Photoroom.zip",
+  "file": "логотип-Photoroom.png",
+  "asset": "frontend/public/assets/brand/luma-original.png",
+  "bytes": 182239,
+  "width": 1254,
+  "height": 1254,
+  "mode": "RGBA",
+  "sha256": "1edfd0e8f521c555c9c7ff7634db19c5898531562d90ff5532da7bff6ba3e3b7",
+  "unchangedBytes": true,
+  "presentation": {
+    "logoCrop": [115, 455, 1033, 344],
+    "markCrop": [115, 455, 344, 344],
+    "method": "CSS crops transparent canvas, uniform scaling; original file unchanged",
+    "lightTheme": "CSS invert(1) for contrast on white; original file unchanged",
+    "studios": "separate text above original logo"
+  }
+}
