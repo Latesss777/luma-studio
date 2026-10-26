@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-25T21:04:28.005Z",
+  "date": "2026-10-26T05:29:36.244Z",
   "checks": [
     {
       "name": "Desktop",
@@ -9,65 +9,65 @@
       "codec": "h264",
       "pixelFormat": "yuv420p",
       "fps": "30/1",
-      "duration": 187.533333,
-      "size": 15476850,
+      "duration": 187.6,
+      "size": 15778888,
       "faststart": true,
       "fullyDecoded": true,
       "seekFramesExtracted": true,
-      "capturedFrames": 1140,
+      "capturedFrames": 1155,
       "captureMethod": "Chromium compositor frames on paints",
       "timeline": [
         {
           "name": "Вход",
-          "seconds": 0.053745957999999976
+          "seconds": 0.046747000000000295
         },
         {
           "name": "Онбординг",
-          "seconds": 20.304309803
+          "seconds": 20.357017058999997
         },
         {
           "name": "Главная и карусель",
-          "seconds": 43.936774877000005
+          "seconds": 44.101487712
         },
         {
           "name": "Произведение и главы",
-          "seconds": 56.876672808
+          "seconds": 56.869967212
         },
         {
           "name": "Читалка",
-          "seconds": 62.910835276
+          "seconds": 62.867800222
         },
         {
           "name": "Аудио",
-          "seconds": 87.891513997
+          "seconds": 88.02253505799999
         },
         {
           "name": "Заметки и отзывы",
-          "seconds": 101.519050282
+          "seconds": 101.734203528
         },
         {
           "name": "Библиотека и полка",
-          "seconds": 112.30731042900001
+          "seconds": 112.408128616
         },
         {
           "name": "Профиль и аналитика",
-          "seconds": 128.26056792699998
+          "seconds": 128.350873244
         },
         {
           "name": "Telegram",
-          "seconds": 144.45567653600003
+          "seconds": 144.56857514700002
         },
         {
           "name": "Notion",
-          "seconds": 154.940363973
+          "seconds": 155.03398692400003
         },
         {
           "name": "Экспорт",
-          "seconds": 164.920688291
+          "seconds": 165.09860433
         },
         {
           "name": "Финал",
-          "seconds": 176.668565217
+          "seconds": 176.85056835500004
         }
       ]
     },
@@ -79,65 +79,65 @@
       "codec": "h264",
       "pixelFormat": "yuv420p",
       "fps": "30/1",
-      "duration": 195.6,
-      "size": 23805432,
+      "duration": 195.466667,
+      "size": 24223699,
       "faststart": true,
       "fullyDecoded": true,
       "seekFramesExtracted": true,
-      "capturedFrames": 1275,
+      "capturedFrames": 1289,
       "captureMethod": "Chromium compositor frames on paints",
       "timeline": [
         {
           "name": "Вход",
-          "seconds": 0.04945004900000004
+          "seconds": 0.046677058000000216
         },
         {
           "name": "Онбординг",
-          "seconds": 20.505395481
+          "seconds": 20.614048212
         },
         {
           "name": "Главная и карусель",
-          "seconds": 44.234147608
+          "seconds": 44.540589876
         },
         {
           "name": "Произведение и главы",
-          "seconds": 57.465793188
+          "seconds": 57.598622539999994
         },
         {
           "name": "Читалка",
-          "seconds": 63.935202583000006
+          "seconds": 64.041938711
         },
         {
           "name": "Аудио",
-          "seconds": 90.08395811599999
+          "seconds": 89.95785712499999
         },
         {
           "name": "Заметки и отзывы",
-          "seconds": 105.034784519
+          "seconds": 104.815881218
         },
         {
           "name": "Библиотека и полка",
-          "seconds": 116.400801542
+          "seconds": 116.096961381
         },
         {
           "name": "Профиль и аналитика",
-          "seconds": 132.7587589
+          "seconds": 132.503997434
         },
         {
           "name": "Telegram",
-          "seconds": 150.21597441000003
+          "seconds": 150.11389787000002
         },
         {
           "name": "Notion",
-          "seconds": 161.571192836
+          "seconds": 161.46086613900002
         },
         {
           "name": "Экспорт",
-          "seconds": 172.31813010000002
+          "seconds": 172.33766445199998
         },
         {
           "name": "Финал",
-          "seconds": 185.08714902500003
+          "seconds": 184.93053546000002
         }
       ]
     }
