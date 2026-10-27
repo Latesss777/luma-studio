@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Search, Bookmark, Bell, MoreHorizontal, Sun, Moon, X, LayoutGrid, Menu } from "lucide-react";
+import { Search, Bookmark, Bell, MoreHorizontal, Sun, Moon, X, LayoutGrid, Menu, LibraryBig } from "lucide-react";
 import { all } from "../data/books";
 import { go, useStore } from "../shared/store";
 import { BrandArt } from "../shared/ui";
@@ -137,7 +137,7 @@ function More() {
   const links = [
     ["/top", "Топы"],
     ["/audio", "Аудиокниги"],
-    ["/library", "Мои полки"],
+    ["/library?tab=shelves", "Мои полки"],
     ["/integrations", "Импорт и экспорт"],
     ["/profile", "Профиль и статистика"],
   ];
@@ -201,9 +201,9 @@ export default function Header({ path, query = "" }) {
         </nav>
         <SearchBox />
         <div className="lx-actions">
-          <button className={`lx-pill ${path.startsWith("/bookmarks") ? "active" : ""}`} onClick={() => go("/bookmarks")}>
-            <Bookmark size={17} />
-            <span>Закладки</span>
+          <button className={`lx-pill ${path.startsWith("/library") || path.startsWith("/bookmarks") ? "active" : ""}`} onClick={() => go("/library")}>
+            <LibraryBig size={17} />
+            <span>Библиотека</span>
           </button>
           <button
             className="lx-icon"
@@ -229,12 +229,12 @@ export function MobileNav({ path }) {
   const ids = Object.keys(state.bookmarks || {});
   const items = [
     ["/catalog", "Каталог", LayoutGrid],
-    ["/bookmarks", "Закладки", Bookmark],
+    ["/library", "Библиотека", LibraryBig],
   ];
   const links = [
     ["/top", "Топы"],
     ["/audio", "Аудиокниги"],
-    ["/library", "Мои полки"],
+    ["/library?tab=shelves", "Мои полки"],
     ["/profile", "Профиль"],
     ["/integrations", "Импорт и экспорт"],
   ];

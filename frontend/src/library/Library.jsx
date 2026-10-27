@@ -34,9 +34,9 @@ export async function readIcon(file) {
     r.readAsDataURL(file);
   });
 }
-export default function Library() {
+export default function Library({ initialTab = "Библиотека" }) {
   const { state, update, setToast } = useStore();
-  const [tab, setTab] = useState("Библиотека");
+  const [tab, setTab] = useState(initialTab);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const [icon, setIcon] = useState("");

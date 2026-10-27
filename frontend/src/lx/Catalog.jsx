@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { SlidersHorizontal, X, ArrowDownWideNarrow, ArrowUpNarrowWide, ChevronDown, Search, Sparkles, Plus, Minus } from "lucide-react";
 import { all, types, allGenres, allTags } from "../data/books";
 import { go, useStore } from "../shared/store";
-import { TitleCard } from "./ui";
+import { TitleCard, Select } from "./ui";
 import { collections } from "./Home";
 
 const sorts = [
@@ -148,14 +148,7 @@ export default function Catalog({ query }) {
       <h1 className="lx-h1 lx-h1-center">{coll ? coll.name : "Каталог"}</h1>
       <div className="lx-ctoolbar">
         <div className="lx-sort">
-          <label className="lx-select">
-            <span className="lx-sr">Сортировка</span>
-            <select id="lx-sort" value={f.sort} onChange={(e) => set({ sort: e.target.value })}>
-              {sorts.map(([k, l]) => (
-                <option key={k} value={k}>{l}</option>
-              ))}
-            </select>
-          </label>
+          <Select id="lx-sort" label="Сортировка" value={f.sort} options={sorts} onChange={(v) => set({ sort: v })} />
           <button
             className="lx-icon"
             aria-label={f.dir === "desc" ? "По убыванию, переключить на возрастание" : "По возрастанию, переключить на убывание"}

@@ -155,7 +155,7 @@ function Sections({ sec }) {
   );
 }
 
-function ContinueCard({ t, p }) {
+export function ContinueCard({ t, p }) {
   return (
     <button className="lx-wide-card" onClick={() => go(`/reader/${t.id}`)}>
       <span className="lx-wide-art" style={{ backgroundImage: `url("${backdrop(t)}")` }}>
@@ -187,29 +187,41 @@ function Top10({ list }) {
   );
 }
 
+const moods = [
+  ["Фэнтези", "Магия, башни, другие миры"],
+  ["Романтика", "Медленно и по-настоящему"],
+  ["Мистика", "То, что видно краем глаза"],
+  ["Боевик", "Бой с первой страницы"],
+  ["Повседневность", "Тихие истории на вечер"],
+  ["Детектив", "Улики, ложные следы, развязка"],
+  ["Комедия", "Чтобы улыбнуться"],
+  ["Фантастика", "Будущее и далёкий космос"],
+];
+
 function Moods() {
-  const moods = [
-    ["Фэнтези", 268],
-    ["Романтика", 340],
-    ["Мистика", 220],
-    ["Боевик", 8],
-    ["Повседневность", 150],
-    ["Детектив", 40],
-    ["Комедия", 52],
-    ["Фантастика", 196],
-  ];
   return (
     <section className="lx-section" aria-labelledby="moods">
       <div className="lx-section-head">
         <h2 id="moods">Под настроение</h2>
       </div>
-      <div className="lx-moods">
-        {moods.map(([g, h]) => (
-          <button key={g} className="lx-mood" style={{ "--h": h }} onClick={() => go("/catalog?genre=" + encodeURIComponent(g))}>
-            <span>{g}</span>
-            <small>{all.filter((t) => t.genres.includes(g)).length}</small>
-          </button>
-        ))}
+      <div className="lx-moods2">
+        {moods.map(([g, sub]) => {
+          const list = all.filter((t) => t.genres.includes(g)).sort((a, b) => b.rating - a.rating);
+          return (
+            <button key={g} className="lx-mood2" onClick={() => go("/catalog?genre=" + encodeURIComponent(g))}>
+              <span className="lx-mood2-text">
+                <strong>{g}</strong>
+                <small>{sub}</small>
+                <span className="lx-mood2-count">{list.length} {list.length === 1 ? "тайтл" : list.length < 5 ? "тайтла" : "тайтлов"}</span>
+              </span>
+              <span className="lx-mood2-covers" aria-hidden="true">
+                {list.slice(0, 3).map((t, i) => (
+                  <Poster key={t.id} t={t} tag={false} className={`lx-m2-${i}`} />
+                ))}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </section>
   );
@@ -288,18 +300,14 @@ export default function Home({ query = "" }) {
     <div className="lx-home2">
       <Billboard items={picks} />
       <div className="lx-page lx-home2-body">
-        <Sections sec={sec} />
         {sec === "watch" ? (
           <Soon kind="watch" />
         ) : sec === "listen" ? (
           <Listen />
         ) : (
           <>
-            {continuing.length > 0 && (
-              <Rail id="cont" title="Продолжить" items={continuing.map(([t]) => t)} render={(t) => <ContinueCard key={t.id} t={t} p={state.progress[t.id]} />} />
-            )}
             <Top10 list={by("views")} />
-            {because.length > 0 && <Rail id="because" title={`Потому что вы читали «${lastRead.title}»`} items={because} />}
+            {because.length >= 4 && <Rail id="because" title={`Потому что вы читали «${lastRead.title}»`} items={because} />}
             <Rail id="fresh" title="Новинки" more="/catalog?sort=added" items={fresh} />
             <Moods />
             <section className="lx-section" aria-labelledby="shelves">

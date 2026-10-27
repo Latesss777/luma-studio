@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Star, ChevronLeft, ChevronRight, ArrowUpRight, Bookmark, Check } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, ChevronDown, ArrowUpRight, Bookmark, Check } from "lucide-react";
 import { cover } from "../data/books";
 import { go, useStore } from "../shared/store";
 
@@ -159,6 +159,62 @@ export function BookmarkButton({ id }) {
             </button>
           )}
         </div>
+      )}
+    </div>
+  );
+}
+
+// Custom dropdown so the open list follows the Luma palette instead of the OS one.
+export function Select({ id, label, value, options, onChange, icon: Icon }) {
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(0);
+  const ref = useRef(null);
+  const cur = options.find((o) => o[0] === value) || options[0];
+  useEffect(() => {
+    if (!open) return;
+    setHi(Math.max(0, options.findIndex((o) => o[0] === value)));
+    const f = (e) => !ref.current?.contains(e.target) && setOpen(false);
+    document.addEventListener("pointerdown", f);
+    return () => document.removeEventListener("pointerdown", f);
+  }, [open]);
+  const pick = (k) => {
+    onChange(k);
+    setOpen(false);
+    ref.current?.querySelector("button")?.focus();
+  };
+  const key = (e) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!open) return setOpen(true);
+      setHi((h) => (h + (e.key === "ArrowDown" ? 1 : -1) + options.length) % options.length);
+    } else if ((e.key === "Enter" || e.key === " ") && open) {
+      e.preventDefault();
+      pick(options[hi][0]);
+    } else if (e.key === "Escape") setOpen(false);
+  };
+  return (
+    <div className="lx-dd" ref={ref} onKeyDown={key}>
+      <button id={id} type="button" className="lx-dd-btn" aria-haspopup="listbox" aria-expanded={open} aria-label={`${label}: ${cur[1]}`} onClick={() => setOpen(!open)}>
+        {Icon && <Icon size={16} aria-hidden="true" />}
+        <span>{cur[1]}</span>
+        <ChevronDown size={16} aria-hidden="true" className="lx-dd-chev" />
+      </button>
+      {open && (
+        <ul className="lx-pop lx-dd-list" role="listbox" aria-label={label}>
+          {options.map(([k, l], i) => (
+            <li
+              key={k}
+              role="option"
+              aria-selected={k === value}
+              className={`${k === value ? "sel" : ""} ${i === hi ? "hi" : ""}`}
+              onMouseEnter={() => setHi(i)}
+              onClick={() => pick(k)}
+            >
+              {l}
+              {k === value && <Check size={15} aria-hidden="true" />}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

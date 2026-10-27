@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { Provider, useRoute } from "./shared/store";
 const Author = lazy(() => import("./title/Title").then((m) => ({ default: m.Author })));
 const Audio = lazy(() => import("./audio/Audio"));
-const Library = lazy(() => import("./library/Library"));
 const Profile = lazy(() => import("./profile/Profile"));
 const Integrations = lazy(() => import("./integrations/Integrations"));
 import Header, { MobileNav } from "./lx/Header";
@@ -12,7 +11,7 @@ import Catalog from "./lx/Catalog";
 import Top from "./lx/Top";
 import Title from "./lx/Title";
 const ComicReader = lazy(() => import("./lx/ComicReader"));
-import Bookmarks from "./lx/Bookmarks";
+import MyLibrary from "./lx/MyLibrary";
 import Footer, { Info, Notifications } from "./lx/Footer";
 import "@fontsource-variable/unbounded";
 import "./styles.css";
@@ -77,7 +76,7 @@ function App() {
         ) : page === "title" ? (
           <Title key={id} id={id} query={query} />
         ) : page === "bookmarks" ? (
-          <Bookmarks query={query} />
+          <MyLibrary query={"status=" + (new URLSearchParams(query).get("tab") || "reading")} />
         ) : page === "notifications" ? (
           <Notifications />
         ) : page === "info" ? (
@@ -87,7 +86,7 @@ function App() {
         ) : page === "audio" ? (
           <div className="lx-page lx-legacy"><Audio /></div>
         ) : page === "library" ? (
-          <div className="lx-page lx-legacy"><Library /></div>
+          <MyLibrary query={query} />
         ) : page === "profile" ? (
           <div className="lx-page lx-legacy"><Profile /></div>
         ) : page === "integrations" ? (

@@ -116,6 +116,7 @@ books.forEach((b, i) => {
     added: Date.UTC(2026, 9, 1),
     comic: false,
     demo: false,
+    audio: b.id === "alice",
   });
 });
 export const all = [...books, ...demoTitles].map(decorate);
