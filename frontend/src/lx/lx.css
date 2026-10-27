@@ -17,20 +17,7 @@
   --lx-r: 10px;
   --lx-pad: max(16px, env(safe-area-inset-left, 0px));
 }
-:root[data-theme="light"] {
-  --lx-bg: #ffffff;
-  --lx-surface: #f4f4f5;
-  --lx-surface-2: #e4e4e7;
-  --lx-line: #e4e4e7;
-  --lx-fg: #18181b;
-  --lx-muted: #71717a;
-  --lx-meta: #71717a;
-  --lx-accent: #3c83f6;
-  --lx-accent-ink: #ffffff;
-  --lx-star: #eab308;
-  --lx-score-bg: rgba(10, 11, 16, 0.72);
-  --lx-shadow: 0 18px 40px rgba(40, 32, 10, 0.16);
-}
+
 body {
   background: var(--lx-bg);
   color: var(--lx-fg);
@@ -2329,24 +2316,7 @@ body {
   --lx-font: Manrope, "Segoe UI", Arial, sans-serif;
   --lx-display: "Unbounded Variable", "Unbounded", Manrope, Arial, sans-serif;
 }
-:root[data-theme="light"] {
-  --lx-bg: #faf7f2;
-  --lx-surface: #ffffff;
-  --lx-surface-2: #f0eaf7;
-  --lx-line: #e6dff0;
-  --lx-fg: #1d1830;
-  --lx-muted: #6d6585;
-  --lx-meta: #6d6585;
-  --lx-accent: #c9780f;
-  --lx-accent-ink: #ffffff;
-  --lx-star: #d98a12;
-  --lx-read: #c9780f;
-  --lx-listen: #6f5ad6;
-  --lx-watch: #d6455a;
-  --lx-good: #1f9d63;
-  --lx-score-bg: rgba(29, 24, 48, 0.72);
-  --lx-shadow: 0 18px 40px rgba(60, 40, 90, 0.16);
-}
+
 
 /* Accent surfaces get accent ink, not white (amber needs dark text). */
 .lx-ptabs button.active,
@@ -2709,13 +2679,7 @@ body {
    Round 6: audit fixes — motion, layout, contrast.
    ===================================================================== */
 :root { --lx-ease: cubic-bezier(0.2, 0.7, 0.2, 1); --lx-accent-text: var(--lx-accent); }
-:root[data-theme="light"] {
-  /* deep amber: 5.0:1 under white text, 4.7:1 on the paper background */
-  --lx-accent: #a35f00;
-  --lx-read: #a35f00;
-  --lx-star: #a35f00;
-  --lx-accent-text: #a35f00;
-}
+
 
 /* Page change: a short fade so screens don't swap in a flash */
 /* Opacity only: a transform here would trap fixed panels (filters, scrims) inside the page. */
@@ -2795,10 +2759,8 @@ body {
 .lx-bill-dots button:hover .lx-dot-track { background: rgba(255, 255, 255, 0.5); }
 
 /* Light theme: the dark billboard ends on a clean edge, no grey wash */
-:root[data-theme="light"] .lx-bill-shade {
-  background: linear-gradient(90deg, rgba(14, 11, 24, 0.9) 0%, rgba(14, 11, 24, 0.5) 45%, rgba(14, 11, 24, 0.05) 75%);
-}
-:root[data-theme="light"] .lx-home2-body { margin-top: 0; padding-top: 24px; }
+
+
 
 /* Rail arrows stay inside the screen on narrower desktops and tablets */
 @media (max-width: 1360px) {
@@ -3009,30 +2971,10 @@ body {
   --lx-score-bg: rgba(0, 0, 0, 0.72);
   --lx-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
 }
-:root[data-theme="light"] {
-  --lx-bg: #ffffff;
-  --lx-surface: #f4f4f4;
-  --lx-surface-2: #e8e8e8;
-  --lx-line: #dadada;
-  --lx-fg: #000000;
-  --lx-muted: #616161;
-  --lx-meta: rgba(0, 0, 0, 0.62);
-  --lx-accent: #000000;
-  --lx-accent-ink: #ffffff;
-  --lx-accent-text: #000000;
-  --lx-star: #000000;
-  --lx-read: #000000;
-  --lx-listen: #000000;
-  --lx-watch: #000000;
-  --lx-good: #000000;
-  --lx-mid: #333333;
-  --lx-bad: #000000;
-  --lx-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
-}
+
 
 /* Billboard: neutral shade, white primary button */
-.lx-bill-shade,
-:root[data-theme="light"] .lx-bill-shade {
+.lx-bill-shade{
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 45%, rgba(0, 0, 0, 0.05) 75%),
     linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, transparent 40%);
@@ -3221,3 +3163,144 @@ body {
 .lx-lib-shelves .page-head p,
 .lx-lib-shelves .tabs { display: none; }
 .lx-lib-shelves .page-head { justify-content: flex-end; margin-bottom: 8px; }
+
+/* =====================================================================
+   Round 8: nav as pills, rounded filter cards. Single dark theme.
+   ===================================================================== */
+:root { color-scheme: dark; }
+
+/* Header nav: every item is a pill like the old «Библиотека» button */
+.lx-nav { gap: 6px; margin-left: 14px; }
+.lx-nav-link,
+.lx-header-clear .lx-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--lx-surface-2);
+  color: var(--lx-fg);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: none;
+  white-space: nowrap;
+}
+.lx-header-clear .lx-nav-link { background: rgba(255, 255, 255, 0.12); color: #fff; backdrop-filter: blur(8px); }
+.lx-nav-link:hover,
+.lx-header-clear .lx-nav-link:hover { background: #2b2b2b; color: #fff; }
+.lx-nav-link.active,
+.lx-header-clear .lx-nav-link.active { background: #fff; color: #000; box-shadow: none; }
+.lx-nav-link svg { flex-shrink: 0; }
+.lx-search { max-width: 280px; }
+@media (max-width: 1320px) {
+  .lx-nav-link svg { display: none; }
+  .lx-nav-link { padding: 0 12px; }
+}
+@media (max-width: 1120px) {
+  .lx-nav-link span { font-size: 13px; }
+  .lx-nav { margin-left: 6px; gap: 4px; }
+  .lx-search { max-width: 200px; }
+}
+
+/* Filter panel: rounded cards */
+.lx-fpanel { gap: 8px; }
+.lx-fpanel-top { margin-bottom: 4px; align-items: center; }
+.lx-fbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--lx-line);
+  color: var(--lx-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.lx-fbtn:hover { color: var(--lx-fg); border-color: var(--lx-muted); }
+.lx-freset { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--lx-muted); font-size: 13px; font-weight: 600; }
+.lx-freset:hover { color: var(--lx-fg); }
+.lx-fsearch {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--lx-surface-2);
+  border: 0;
+  margin-bottom: 4px;
+}
+.lx-fsearch svg { color: var(--lx-fg); }
+.lx-acc,
+.lx-acc-static {
+  border: 0;
+  border-radius: 18px;
+  background: var(--lx-surface-2);
+  overflow: hidden;
+}
+.lx-acc-head {
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--lx-font);
+}
+.lx-acc-head:hover { background: #242424; }
+.lx-acc-static .lx-acc-head:hover { background: none; }
+.lx-acc-head svg { transform: none; color: var(--lx-fg); transition: transform 0.18s var(--lx-ease); }
+.lx-acc.open .lx-acc-head svg { transform: rotate(90deg); }
+.lx-acc-static .lx-acc-head { padding-bottom: 8px; }
+.lx-acc-body { padding: 2px 18px 18px; gap: 12px; }
+.lx-fpanel .lx-chips button,
+.lx-fpanel .lx-chips .lx-tri {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px !important;
+  background: transparent;
+  border: 1px solid #3a3a3a;
+  color: var(--lx-fg);
+  font-size: 13px;
+  font-weight: 600;
+}
+.lx-fpanel .lx-chips button:hover { border-color: var(--lx-muted); }
+.lx-fpanel .lx-chips button.active,
+.lx-fpanel .lx-chips .lx-tri.inc { background: #fff; color: #000; border-color: #fff; }
+.lx-fpanel .lx-chips .lx-tri.exc { background: transparent; color: var(--lx-muted); border-color: #3a3a3a; text-decoration: line-through; }
+.lx-quick button { height: 30px !important; padding: 0 12px !important; }
+.lx-app .lx-range-inputs input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 0;
+  background: #262626;
+  font-size: 14px;
+}
+.lx-range-inputs { gap: 10px; }
+.lx-range-inputs > span { display: none; }
+.lx-range-inputs { grid-template-columns: 1fr 1fr; }
+.lx-hint { color: var(--lx-muted); }
+.lx-switch { padding: 4px 0; }
+.lx-preset { border-radius: 999px; }
+.lx-fpanel-foot .lx-btn { border-radius: 999px; }
+
+/* Rounder controls everywhere filters live */
+.lx-dd-btn,
+.lx-lib-search,
+.lx-chsearch,
+.lx-segment,
+.lx-pill,
+.lx-colls button,
+.lx-chips button,
+.lx-lib-filters .lx-chips button { border-radius: 999px; }
+.lx-dd-list { border-radius: 16px; }
+.lx-dd-list li { border-radius: 10px; }
+.lx-segment button { border-radius: 999px; }
+.lx-ctypes button { height: 34px; padding: 0 16px; }
+.lx-colls button { height: 34px; padding: 0 16px; }
+.lx-sort .lx-icon { background: var(--lx-surface-2); }
+.lx-nav-link.active,
+.lx-header-clear .lx-nav-link.active { border-radius: 999px; }
+.lx-fpanel-top { gap: 8px; }
+.lx-fbtn, .lx-freset { white-space: nowrap; font-size: 12.5px; }
+.lx-fbtn { padding: 0 12px; flex-shrink: 0; }
+.lx-freset { margin-left: auto; }

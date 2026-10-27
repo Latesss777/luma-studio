@@ -224,17 +224,6 @@ export default function Profile() {
             Если нужного издания нет, показываем фактический язык доступного
             текста.
           </p>
-          <div className="settings-row">
-            <label htmlFor="theme">Оформление</label>
-            <select
-              id="theme"
-              value={state.theme}
-              onChange={(e) => update({ theme: e.target.value })}
-            >
-              <option value="dark">Тёмное</option>
-              <option value="light">Светлое</option>
-            </select>
-          </div>
           <p className="muted small">
             Данные хранятся только на этом устройстве.
           </p>

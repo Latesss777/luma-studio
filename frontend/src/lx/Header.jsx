@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Search, Bookmark, Bell, MoreHorizontal, Sun, Moon, X, LayoutGrid, Menu, LibraryBig } from "lucide-react";
+import { Search, Bell, MoreHorizontal, X, LayoutGrid, Menu, LibraryBig, House, BookOpen, Headphones, Clapperboard } from "lucide-react";
 import { all } from "../data/books";
 import { go, useStore } from "../shared/store";
 import { BrandArt } from "../shared/ui";
@@ -168,7 +168,6 @@ function More() {
 
 export default function Header({ path, query = "" }) {
   const { state, update } = useStore();
-  const light = state.theme === "light";
   const [solid, setSolid] = useState(false);
   useEffect(() => {
     const f = () => setSolid(scrollY > 24);
@@ -178,11 +177,12 @@ export default function Header({ path, query = "" }) {
   }, []);
   const sec = path === "/" ? new URLSearchParams(query).get("s") || "all" : "";
   const nav = [
-    ["/", "Главная", path === "/" && sec === "all"],
-    ["/?s=read", "Читать", sec === "read"],
-    ["/?s=listen", "Слушать", sec === "listen"],
-    ["/?s=watch", "Смотреть", sec === "watch"],
-    ["/catalog", "Каталог", path.startsWith("/catalog")],
+    ["/", "Главная", House, path === "/" && sec === "all"],
+    ["/?s=read", "Читать", BookOpen, sec === "read"],
+    ["/?s=listen", "Слушать", Headphones, sec === "listen"],
+    ["/?s=watch", "Смотреть", Clapperboard, sec === "watch"],
+    ["/catalog", "Каталог", LayoutGrid, path.startsWith("/catalog")],
+    ["/library", "Библиотека", LibraryBig, path.startsWith("/library") || path.startsWith("/bookmarks")],
   ];
   return (
     <header className={`lx-header ${path === "/" && !solid ? "lx-header-clear" : ""}`}>
@@ -192,26 +192,16 @@ export default function Header({ path, query = "" }) {
           <span className="lx-logo-word">Luma</span>
         </button>
         <nav className="lx-nav" aria-label="Разделы">
-          {nav.map(([u, l, on]) => (
+          {nav.map(([u, l, I, on]) => (
             <button key={u} className={`lx-nav-link ${on ? "active" : ""}`} aria-current={on ? "page" : undefined} onClick={() => go(u)}>
-              {l}
+              <I size={16} aria-hidden="true" />
+              <span>{l}</span>
             </button>
           ))}
           <More />
         </nav>
         <SearchBox />
         <div className="lx-actions">
-          <button className={`lx-pill ${path.startsWith("/library") || path.startsWith("/bookmarks") ? "active" : ""}`} onClick={() => go("/library")}>
-            <LibraryBig size={17} />
-            <span>Библиотека</span>
-          </button>
-          <button
-            className="lx-icon"
-            aria-label={light ? "Тёмная тема" : "Светлая тема"}
-            onClick={() => update({ theme: light ? "dark" : "light" })}
-          >
-            {light ? <Moon size={19} /> : <Sun size={19} />}
-          </button>
           <Notifications />
           <button className="lx-avatar" aria-label="Профиль" onClick={() => go("/profile")}>
             {state.profile.avatar ? <img src={state.profile.avatar} alt="" /> : state.profile.name[0]}
@@ -225,7 +215,6 @@ export default function Header({ path, query = "" }) {
 export function MobileNav({ path }) {
   const { state, update } = useStore();
   const [menu, setMenu] = useState(false);
-  const light = state.theme === "light";
   const ids = Object.keys(state.bookmarks || {});
   const items = [
     ["/catalog", "Каталог", LayoutGrid],
@@ -277,9 +266,6 @@ export function MobileNav({ path }) {
                 {l}
               </button>
             ))}
-            <button className="lx-sheet-link" onClick={() => update({ theme: light ? "dark" : "light" })}>
-              {light ? <Moon size={18} /> : <Sun size={18} />} {light ? "Тёмная тема" : "Светлая тема"}
-            </button>
           </div>
         </div>
       )}

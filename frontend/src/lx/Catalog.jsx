@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { SlidersHorizontal, X, ArrowDownWideNarrow, ArrowUpNarrowWide, ChevronDown, Search, Sparkles, Plus, Minus } from "lucide-react";
+import { SlidersHorizontal, X, ArrowDownWideNarrow, ArrowUpNarrowWide, ChevronRight, Search, Sparkles, Plus, Minus, BookmarkPlus, Trash2 } from "lucide-react";
 import { all, types, allGenres, allTags } from "../data/books";
 import { go, useStore } from "../shared/store";
 import { TitleCard, Select } from "./ui";
@@ -51,7 +51,7 @@ function Group({ title, count, children, open: init = false }) {
           {title}
           {count > 0 && <i className="lx-acc-count">{count}</i>}
         </span>
-        <ChevronDown size={18} />
+        <ChevronRight size={18} />
       </button>
       {open && <div className="lx-acc-body">{children}</div>}
     </div>
@@ -202,8 +202,12 @@ export default function Catalog({ query }) {
         {panel && (
           <aside className="lx-fpanel" aria-label="Фильтры">
             <div className="lx-fpanel-top">
-              <button className="lx-link" onClick={savePreset}>Сохранить шаблон</button>
-              <button className="lx-link" onClick={() => go("/catalog")}>Сбросить фильтры</button>
+              <button className="lx-fbtn" onClick={savePreset}>
+                <BookmarkPlus size={16} /> Сохранить шаблон
+              </button>
+              <button className="lx-freset" onClick={() => go("/catalog")}>
+                Сбросить фильтры <Trash2 size={15} />
+              </button>
               <button className="lx-icon lx-fclose" aria-label="Закрыть фильтры" onClick={() => setPanel(false)}>
                 <X size={18} />
               </button>

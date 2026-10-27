@@ -18,7 +18,6 @@ const initial = {
     avatar: "",
   },
   language: "ru",
-  theme: "dark",
   formats: ["Книги"],
   genres: ["Фэнтези"],
   favorites: [],
@@ -55,7 +54,6 @@ export function Provider({ children }) {
     } catch {
       setToast("Память браузера заполнена. Изменения пока не сохранены.");
     }
-    document.documentElement.dataset.theme = state.theme;
   }, [state]);
   useEffect(() => {
     if (!toast) return;
