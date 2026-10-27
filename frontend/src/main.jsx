@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Provider, useStore, useRoute, go } from "./shared/store";
 import { Brand, BrandArt } from "./shared/ui";
+import { isTvDevice, useTvNavigation } from "./shared/tv";
 import { books, cover } from "./data/books";
 import Auth from "./auth/Auth";
 import Onboarding from "./onboarding/Onboarding";
@@ -69,6 +70,13 @@ function App() {
   const route = useRoute();
   const [path, query = ""] = route.split("?");
   const [, page, id] = path.split("/");
+  const tv =
+    state.settings.tv === "on" ||
+    (state.settings.tv !== "off" && isTvDevice());
+  useEffect(() => {
+    document.documentElement.classList.toggle("tv-mode", tv);
+  }, [tv]);
+  useTvNavigation(tv && page !== "reader");
   useEffect(() => {
     books.forEach((b) => {
       const im = new Image();
@@ -89,7 +97,7 @@ function App() {
   if (page === "reader")
     return <Reader key={id + query} id={id} query={query} />;
   return (
-    <div className="app-shell">
+    <div className={"app-shell" + (tv ? " tv" : "")}>
       {launching && (
         <div className="launch-transition" aria-hidden="true">
           <BrandArt mark />

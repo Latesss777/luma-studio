@@ -23,6 +23,8 @@ const initial = {
   library: [],
   archive: [],
   shelves: [],
+  // Заметки и отзывы выключены по умолчанию; tv: "auto" | "on" | "off"
+  settings: { community: false, tv: "auto" },
   notes: {},
   reviews: {},
   progress: {},
@@ -40,6 +42,7 @@ export function Provider({ children }) {
             ...initial,
             ...saved,
             profile: { ...initial.profile, ...saved.profile },
+            settings: { ...initial.settings, ...saved.settings },
           }
         : initial;
     } catch {

@@ -17,6 +17,7 @@ import {
   Button,
   IconButton,
   Community,
+  Trailer,
   ShelfPicker,
   Rating,
 } from "../shared/ui";
@@ -24,7 +25,7 @@ const time = (s) =>
   `${Math.floor((s || 0) / 60)}:${String(Math.floor((s || 0) % 60)).padStart(2, "0")}`;
 export default function Audio() {
   const b = findBook("alice");
-  const { addLibrary, event } = useStore();
+  const { state, addLibrary, event } = useStore();
   const audio = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -179,13 +180,14 @@ export default function Audio() {
           <small>EN</small>
           <ChevronRight size={17} />
         </button>
+        <Trailer id="alice-audio" />
         <h2>Главные герои</h2>
         <div className="character-chips">
           {b.characters.map((c) => (
             <span key={c}>{c}</span>
           ))}
         </div>
-        <Community id="alice" />
+        {state.settings.community && <Community id="alice" />}
       </div>
     </>
   );

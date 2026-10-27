@@ -17,6 +17,7 @@ import {
   Skull,
 } from "lucide-react";
 import { cover, findBook } from "../data/books";
+import { trailers, youtubeEmbed } from "../data/trailers";
 import { go, useStore } from "./store";
 export const formatIcons = [BookOpen, PanelsTopLeft, ScrollText, Headphones];
 export const genreIcons = [Sparkles, Search, Heart, Orbit, Skull, Compass];
@@ -257,6 +258,29 @@ export function ShelfPicker({ id }) {
     </label>
   );
 }
+export function Trailer({ id }) {
+  const t = trailers[id];
+  const embed = t && youtubeEmbed(t.url);
+  if (!embed) return null;
+  return (
+    <section className="trailer">
+      <div className="section-head">
+        <h2>Трейлер</h2>
+        <span className="muted">{t.kind}</span>
+      </div>
+      <div className="trailer-frame">
+        <iframe
+          src={embed}
+          title={`Трейлер: ${t.title}`}
+          loading="lazy"
+          allow="encrypted-media; picture-in-picture; fullscreen"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+    </section>
+  );
+}
 export function Community({ id }) {
   const { state, update, setToast } = useStore();
   const [note, setNote] = React.useState(state.notes[id] || "");
@@ -268,6 +292,7 @@ export function Community({ id }) {
         <h2>Мои заметки</h2>
         <textarea
           aria-label="Текст заметки"
+          dir="ltr"
           placeholder="Что хочется запомнить?"
           value={note}
           maxLength={4000}
@@ -286,7 +311,7 @@ export function Community({ id }) {
       <section>
         <h2>Отзывы</h2>
         {(state.reviews[id] || []).map((r) => (
-          <blockquote key={r.id}>
+          <blockquote key={r.id} dir="ltr">
             <span className="rating">
               <Star size={15} fill="#e6c563" stroke="#e6c563" />
               {r.score} / 10
@@ -318,6 +343,7 @@ export function Community({ id }) {
         >
           <textarea
             aria-label="Текст отзыва"
+            dir="ltr"
             placeholder="Поделись впечатлением"
             required
             maxLength={2000}

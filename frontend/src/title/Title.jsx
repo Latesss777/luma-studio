@@ -18,6 +18,7 @@ import {
   Tags,
   Rating,
   Community,
+  Trailer,
   ShelfPicker,
   Card,
   PageHead,
@@ -82,8 +83,13 @@ export default function Title({ id }) {
         </div>
       </section>
       <div className="title-body">
+        <Trailer id={b.id} />
         <div className="tabs" role="tablist" aria-label="О произведении">
-          {["Главы", "Герои", "Заметки и отзывы"].map((t) => (
+          {[
+            "Главы",
+            "Герои",
+            ...(state.settings.community ? ["Заметки и отзывы"] : []),
+          ].map((t) => (
             <button
               key={t}
               role="tab"
@@ -161,7 +167,7 @@ export default function Title({ id }) {
             </button>
           </section>
         ) : (
-          <Community key={b.id} id={b.id} />
+          state.settings.community && <Community key={b.id} id={b.id} />
         )}
       </div>
     </>

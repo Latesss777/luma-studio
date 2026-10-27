@@ -19,6 +19,12 @@ export default function Home() {
   useEffect(() => {
     const key = (e) => {
       if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      // В режиме телевизора стрелки двигают фокус; карусель — только когда фокус в ней
+      if (
+        document.documentElement.classList.contains("tv-mode") &&
+        !document.activeElement?.closest?.(".hero-carousel")
+      )
+        return;
       if (e.key === "ArrowRight") move(1);
       if (e.key === "ArrowLeft") move(-1);
     };

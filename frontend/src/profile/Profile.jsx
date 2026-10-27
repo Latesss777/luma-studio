@@ -235,6 +235,40 @@ export default function Profile() {
               <option value="light">Светлое</option>
             </select>
           </div>
+          <div className="settings-row">
+            <label htmlFor="tv-mode">Режим телевизора</label>
+            <select
+              id="tv-mode"
+              value={state.settings.tv}
+              onChange={(e) =>
+                update((s) => ({ settings: { ...s.settings, tv: e.target.value } }))
+              }
+            >
+              <option value="auto">Авто</option>
+              <option value="on">Включён</option>
+              <option value="off">Выключен</option>
+            </select>
+          </div>
+          <p className="muted small">
+            В режиме телевизора крупнее текст и кнопки, навигация стрелками пульта
+            и «Назад» через Esc.
+          </p>
+          <label className="settings-toggle">
+            <input
+              type="checkbox"
+              checked={state.settings.community}
+              onChange={(e) =>
+                update((s) => ({
+                  settings: { ...s.settings, community: e.target.checked },
+                }))
+              }
+            />
+            <span>Показывать заметки и отзывы</span>
+          </label>
+          <p className="muted small">
+            Выключено по умолчанию. Заметки и отзывы хранятся только на этом
+            устройстве.
+          </p>
           <p className="muted small">
             Данные хранятся только на этом устройстве.
           </p>
