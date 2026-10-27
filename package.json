@@ -13,7 +13,7 @@
     "assets": "node scripts/assets.mjs"
   },
   "dependencies": {
-    "@fontsource-variable/roboto-condensed": "5.1.1",
+    "@fontsource-variable/unbounded": "5.1.1",
     "lucide-react": "0.468.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"

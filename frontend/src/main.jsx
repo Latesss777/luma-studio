@@ -14,7 +14,7 @@ import Title from "./lx/Title";
 import ComicReader from "./lx/ComicReader";
 import Bookmarks from "./lx/Bookmarks";
 import Footer, { Info, Notifications } from "./lx/Footer";
-import "@fontsource-variable/roboto-condensed";
+import "@fontsource-variable/unbounded";
 import "./styles.css";
 import "./lx/lx.css";
 class Boundary extends React.Component {
