@@ -2704,3 +2704,281 @@ body {
   .lx-short { display: inline; }
   .lx-cta-ghost { flex: 1; }
 }
+
+/* =====================================================================
+   Round 6: audit fixes — motion, layout, contrast.
+   ===================================================================== */
+:root { --lx-ease: cubic-bezier(0.2, 0.7, 0.2, 1); --lx-accent-text: var(--lx-accent); }
+:root[data-theme="light"] {
+  /* deep amber: 5.0:1 under white text, 4.7:1 on the paper background */
+  --lx-accent: #a35f00;
+  --lx-read: #a35f00;
+  --lx-star: #a35f00;
+  --lx-accent-text: #a35f00;
+}
+
+/* Page change: a short fade so screens don't swap in a flash */
+/* Opacity only: a transform here would trap fixed panels (filters, scrims) inside the page. */
+.lx-main > * { animation: lx-page-in 0.22s ease-out; }
+@keyframes lx-page-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* Popovers and menus grow from their anchor */
+.lx-pop,
+.lx-menu,
+.lx-rd-picker { animation: lx-pop-in 0.16s var(--lx-ease) both; transform-origin: top right; }
+.lx-menu-left { transform-origin: top left; }
+@keyframes lx-pop-in { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+.lx-rd-picker { animation-name: lx-pop-in-center; }
+@keyframes lx-pop-in-center { from { opacity: 0; translate: -50% -4px; } to { opacity: 1; translate: -50% 0; } }
+
+/* Side panels slide in; scrims fade */
+.lx-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  background: rgba(6, 4, 12, 0.55);
+  animation: lx-fade 0.2s ease both;
+}
+@keyframes lx-fade { from { opacity: 0; } to { opacity: 1; } }
+.lx-rd-drawer { animation: lx-slide-l 0.24s var(--lx-ease) both; }
+@keyframes lx-slide-l { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.lx-sheet { animation: lx-slide-up 0.26s var(--lx-ease) both; }
+@keyframes lx-slide-up { from { transform: translateY(100%); } to { transform: none; } }
+.lx-sheet-wrap { animation: lx-fade 0.2s ease both; }
+.lx-acc-body { animation: lx-acc-in 0.18s var(--lx-ease) both; }
+@keyframes lx-acc-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.lx-rd-scrim { display: none; }
+.lx-fscrim { display: none; }
+.lx-fpanel-foot { display: none; }
+
+/* Header: the solid layer fades in instead of snapping */
+.lx-header { position: fixed; background: transparent !important; }
+.lx-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--lx-bg) 94%, transparent);
+  border-bottom: 1px solid var(--lx-line);
+  transition: opacity 0.3s ease;
+}
+.lx-header::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 -40px;
+  z-index: -2;
+  background: linear-gradient(rgba(10, 8, 18, 0.72), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.lx-header-clear::before { opacity: 0; }
+.lx-header-clear::after { opacity: 1; }
+
+/* Card lift no longer clipped by the rail's scroll box */
+.lx-rail { padding-top: 8px; margin-top: -8px; }
+
+/* Billboard: drawn backdrops for every slide, larger dot targets */
+.lx-bill-bg-book { filter: none; }
+.lx-bill-dots { gap: 2px; }
+.lx-bill-dots button {
+  width: 44px;
+  height: 24px;
+  padding: 10px 4px;
+  background: none;
+  border-radius: 0;
+  display: grid;
+}
+.lx-dot-track { display: block; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.28); overflow: hidden; }
+.lx-dot-track i { display: block; height: 100%; width: 0; background: #fff; }
+.lx-bill-dots button.on i { animation: none; }
+.lx-bill-dots button:hover .lx-dot-track { background: rgba(255, 255, 255, 0.5); }
+
+/* Light theme: the dark billboard ends on a clean edge, no grey wash */
+:root[data-theme="light"] .lx-bill-shade {
+  background: linear-gradient(90deg, rgba(14, 11, 24, 0.9) 0%, rgba(14, 11, 24, 0.5) 45%, rgba(14, 11, 24, 0.05) 75%);
+}
+:root[data-theme="light"] .lx-home2-body { margin-top: 0; padding-top: 24px; }
+
+/* Rail arrows stay inside the screen on narrower desktops and tablets */
+@media (max-width: 1360px) {
+  .lx-arrow-l { left: 6px; }
+  .lx-arrow-r { right: 6px; }
+}
+
+/* Title page: one primary action */
+.lx-tside .lx-menu-wrap .lx-btn,
+.lx-tside .lx-btn-ghost,
+.lx-tside .lx-btn-on {
+  background: transparent;
+  color: var(--lx-fg);
+  box-shadow: inset 0 0 0 1px var(--lx-line);
+}
+.lx-tside .lx-menu-wrap .lx-btn:hover { box-shadow: inset 0 0 0 1px var(--lx-fg); filter: none; }
+.lx-tside .lx-btn-on { color: var(--lx-accent-text); box-shadow: inset 0 0 0 1px var(--lx-accent); }
+.lx-tscore strong { color: var(--lx-accent-text); }
+
+/* Disabled buttons read as disabled, not as a muddy accent */
+.lx-btn:disabled,
+.lx-btn-sm:disabled {
+  opacity: 1;
+  background: var(--lx-surface-2);
+  color: var(--lx-muted);
+  cursor: not-allowed;
+  filter: none;
+}
+
+/* Toast in Luma's palette, clear of the mobile nav */
+.toast {
+  background: var(--lx-fg);
+  color: var(--lx-bg);
+  border: 0;
+  border-radius: 12px;
+  font-family: var(--lx-font);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px 20px;
+  box-shadow: var(--lx-shadow);
+  animation: lx-toast 0.24s var(--lx-ease) both;
+}
+@keyframes lx-toast { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Reader header on phones: back arrow + short title, then chapter controls */
+@media (max-width: 760px) {
+  .lx-rd-head { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .lx-rd-back span { display: inline; font-size: 13px; }
+  .lx-rd-back { gap: 6px; }
+  .lx-rd-scrim { display: block; z-index: 37; }
+  .lx-rd-drawer { top: auto; left: 0; width: 100%; max-height: 78vh; border-left: 0; border-top: 1px solid var(--rd-line); border-radius: 16px 16px 0 0; animation-name: lx-slide-up; }
+}
+
+/* Filter panel as an overlay sheet below 1100px */
+@media (max-width: 1100px) {
+  .lx-fscrim { display: block; }
+  .lx-fpanel { align-self: stretch; height: 100%; padding-bottom: 0; animation: lx-slide-l 0.24s var(--lx-ease) both; }
+  .lx-fpanel-foot {
+    display: block;
+    position: sticky;
+    bottom: 0;
+    margin-top: 8px;
+    padding: 12px 0 calc(16px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(transparent, var(--lx-bg) 30%);
+  }
+  .lx-fpanel-foot .lx-btn { height: 48px; }
+}
+
+/* Top 10 on phones: numbers stay readable */
+@media (max-width: 760px) {
+  .lx-rail:has(.lx-top10) { grid-auto-columns: 176px; }
+  .lx-top10 { grid-template-columns: 72px 104px; }
+  .lx-top10-n { font-size: 104px; margin-right: -4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-main > *, .lx-pop, .lx-menu, .lx-rd-picker, .lx-scrim, .lx-rd-drawer, .lx-sheet, .lx-sheet-wrap,
+  .lx-acc-body, .lx-fpanel, .toast { animation: none !important; }
+  .lx-header::before, .lx-header::after { transition: none; }
+}
+
+/* =====================================================================
+   Legacy screens (profile, shelves, audio, import/export) inside the
+   Luma shell: same tokens, buttons, type scale and corners.
+   ===================================================================== */
+.lx-app .lx-legacy {
+  --bg: var(--lx-bg);
+  --fg: var(--lx-fg);
+  --surface: var(--lx-surface);
+  --surface2: var(--lx-surface-2);
+  --line: var(--lx-line);
+  --muted: var(--lx-muted);
+  --inverse: var(--lx-accent-ink);
+  --radius: 14px;
+  font-family: var(--lx-font);
+  font-size: 15px;
+  padding-top: 24px;
+}
+.lx-app .lx-legacy :is(h1, .page-head h1) {
+  font-family: var(--lx-display);
+  font-size: clamp(26px, 3.4vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.lx-app .lx-legacy :is(h2, .section-head h2) {
+  font-family: var(--lx-display);
+  font-size: clamp(18px, 1.7vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lx-app .lx-legacy h3 { font-size: 16px; font-weight: 700; }
+
+/* Readable floor: 14px for body copy, 12–13px for captions */
+.lx-app .lx-legacy :is(p, label, li, td, th, select, .text-link, .library-action, .chapter-row,
+  .stat-row span, .settings-row label, .settings-row select, .service-list span, .connect-content p,
+  .workflow-result p, .export-options label, .preview-list li, .field-mapping, .field-mapping label,
+  .field-mapping select, .profile-identity p, .shelf-caption p, .audio-controls > .muted,
+  .character-chips span, .tabs button, .inline-form label, .upload-label, .import-records strong,
+  .analytics .section-head select, .audio-top .text-link, .audio-controls .author-link, .mapping-preview p) {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.lx-app .lx-legacy :is(small, .small, .activity-chart small, .service-list small, .service-heading p,
+  .import-records small, .import-records label > small, .mapping-preview small, .workflow-steps li,
+  .workflow-steps li > span, .preview-list li > span, .profile-shortcuts small, .time-row,
+  .audio-options span, table, .table-scroll table, .demo-notice, .quiet-pill, .field-error,
+  .tabs button span, .audio-controls > .small, .analytics .small, .service-heading .quiet-pill) {
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.lx-app .lx-legacy .stat-row strong { font-family: var(--lx-display); font-size: 32px; font-weight: 600; }
+.lx-app .lx-legacy .profile-identity h2,
+.lx-app .lx-legacy .profile-identity strong { font-family: var(--lx-display); }
+
+/* Buttons */
+.lx-app .lx-legacy .button {
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: var(--lx-accent);
+  color: var(--lx-accent-ink);
+  border: 1px solid var(--lx-accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+.lx-app .lx-legacy .button:hover:not(:disabled) { background: var(--lx-accent); filter: brightness(1.08); }
+.lx-app .lx-legacy .button.secondary {
+  background: transparent;
+  color: var(--lx-fg);
+  border-color: var(--lx-line);
+}
+.lx-app .lx-legacy .button.secondary:hover:not(:disabled) { background: var(--lx-surface); border-color: var(--lx-muted); filter: none; }
+.lx-app .lx-legacy .play-button { background: var(--lx-listen); color: #160f33; }
+.lx-app .lx-legacy .quiet-pill { border-radius: 8px; }
+
+/* Surfaces and corners */
+.lx-app .lx-legacy :is(.shelf-card, .service-list button, .integration-workspace, .connect-content,
+  .import-records, .preview-list, .chapter-row, .profile-shortcuts > *, .settings-row) {
+  border-radius: 14px;
+}
+.lx-app .lx-legacy .tabs button[aria-selected="true"],
+.lx-app .lx-legacy .tabs button.active { box-shadow: inset 0 -2px 0 var(--lx-accent); color: var(--lx-fg); }
+.lx-app .lx-legacy input[type="range"] { accent-color: var(--lx-accent); }
+.lx-app .lx-legacy .audio-progress { accent-color: var(--lx-listen); }
+.lx-chart-empty {
+  margin: 10px 0 14px;
+  padding: 22px;
+  border: 1px dashed var(--lx-line);
+  border-radius: 14px;
+  color: var(--lx-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 560px;
+}
+.lx-loading { min-height: 60vh; display: grid; place-items: center; color: var(--lx-muted); font-size: 14px; background: var(--lx-bg); }
+.lx-rd-loading { color: var(--lx-muted); font-family: var(--lx-font); font-size: 15px; text-align: center; }
+.lx-rd-pick { white-space: nowrap; }
+@media (max-width: 760px) {
+  .lx-rd-head { grid-template-columns: minmax(0, 1fr) auto; gap: 4px; }
+  .lx-rd-gear { display: none; }
+  .lx-rd-nav .lx-icon { width: 34px; height: 34px; }
+}

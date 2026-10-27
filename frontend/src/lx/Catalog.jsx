@@ -205,6 +205,7 @@ export default function Catalog({ query }) {
             )}
           </div>
         </div>
+        {panel && <div className="lx-scrim lx-fscrim" onClick={() => setPanel(false)} aria-hidden="true" />}
         {panel && (
           <aside className="lx-fpanel" aria-label="Фильтры">
             <div className="lx-fpanel-top">
@@ -276,6 +277,11 @@ export default function Catalog({ query }) {
                 <span>Скрыть тайтлы из моих закладок</span>
               </label>
             </Group>
+            <div className="lx-fpanel-foot">
+              <button className="lx-btn" onClick={() => setPanel(false)}>
+                Показать {list.length}
+              </button>
+            </div>
           </aside>
         )}
       </div>

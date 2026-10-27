@@ -273,7 +273,10 @@ export default function Profile() {
             <span>в библиотеке</span>
           </div>
         </div>
-        <div
+        {days.every((d) => !d.value) ? (
+          <p className="lx-chart-empty">Здесь появится ваша активность по дням. Откройте любую главу или включите аудиокнигу.</p>
+        ) : (
+          <div
           className="activity-chart"
           aria-label="Активность за последние дни"
         >
@@ -289,6 +292,7 @@ export default function Profile() {
             </div>
           ))}
         </div>
+        )}
         <p className="muted small">
           Фактические действия в этом браузере. Открытая страница не означает
           прочитанную.

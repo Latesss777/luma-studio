@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider, useRoute } from "./shared/store";
-import { Author } from "./title/Title";
-import Audio from "./audio/Audio";
-import Library from "./library/Library";
-import Profile from "./profile/Profile";
-import Integrations from "./integrations/Integrations";
+const Author = lazy(() => import("./title/Title").then((m) => ({ default: m.Author })));
+const Audio = lazy(() => import("./audio/Audio"));
+const Library = lazy(() => import("./library/Library"));
+const Profile = lazy(() => import("./profile/Profile"));
+const Integrations = lazy(() => import("./integrations/Integrations"));
 import Header, { MobileNav } from "./lx/Header";
 import Home from "./lx/Home";
 import Catalog from "./lx/Catalog";
 import Top from "./lx/Top";
 import Title from "./lx/Title";
-import ComicReader from "./lx/ComicReader";
+const ComicReader = lazy(() => import("./lx/ComicReader"));
 import Bookmarks from "./lx/Bookmarks";
 import Footer, { Info, Notifications } from "./lx/Footer";
 import "@fontsource-variable/unbounded";
@@ -47,7 +47,11 @@ function App() {
     document.title = "Luma — читать мангу, комиксы и книги";
   }, []);
   if (page === "reader") {
-    return <ComicReader key={id + query} id={id} query={query} />;
+    return (
+      <Suspense fallback={<div className="lx-loading" role="status">Открываем читалку…</div>}>
+        <ComicReader key={id + query} id={id} query={query} />
+      </Suspense>
+    );
   }
   return (
     <div className="lx-app">
@@ -63,6 +67,7 @@ function App() {
       </a>
       <Header path={path} query={query} />
       <main id="main-content" tabIndex={-1} className="lx-main" key={page || "home"}>
+        <Suspense fallback={<div className="lx-loading" role="status">Загружаем…</div>}>
         {!page ? (
           <Home query={query} />
         ) : page === "catalog" ? (
@@ -90,6 +95,7 @@ function App() {
         ) : (
           <Home />
         )}
+        </Suspense>
       </main>
       <Footer />
       <MobileNav path={path} />

@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Star, ArrowDownUp, Eye, Check, Share2, Search, Heart } from "lucide-react";
-import chapters from "../data/chapters.json";
+import chapterIndex from "../data/chapterIndex.json";
 import { all, findBook, cover } from "../data/books";
 import { chapterList } from "../data/titles";
 import { go, useStore } from "../shared/store";
 import { Poster, BookmarkButton, Rail, TitleCard, num, ago, marks } from "./ui";
 import Comments from "./Comments";
 
-export const scoreColor = (r) => (r >= 8.5 ? "var(--lx-good)" : r >= 7 ? "var(--lx-mid)" : "var(--lx-bad)");
+export const scoreColor = () => "var(--lx-accent-text, var(--lx-accent))";
 
 export function chaptersOf(t) {
   if (t.comic) return chapterList(t).map((c) => ({ ...c, vol: Math.floor((c.n - 1) / t.volumeSize) + 1 }));
-  return (chapters[t.id] || []).map((c, i) => ({ n: i + 1, title: c.title, date: t.updated, vol: 1 }));
+  return (chapterIndex[t.id] || []).map((title, i) => ({ n: i + 1, title, date: t.updated, vol: 1 }));
 }
 
 function RatePopover({ t }) {

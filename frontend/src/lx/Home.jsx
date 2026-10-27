@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Headphones, Clapperboard, Play, Plus, Check, Info, Star } from "lucide-react";
 import { all, books, findBook, cover } from "../data/books";
 import { makeBackdrop } from "../data/titles";
@@ -26,19 +26,47 @@ const sections = [
   ["watch", "Смотреть", Clapperboard],
 ];
 
-function backdrop(t) {
-  return t.demo ? makeBackdrop(t.id, t.hue) : cover(t);
+function hexHue(hex) {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  if (!d) return 40;
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return Math.round((h * 60 + 360) % 360);
 }
+// Every title gets a drawn wide backdrop; books take the hue of their cover colour.
+export function backdrop(t) {
+  return makeBackdrop(t.id, t.demo ? t.hue : hexHue(t.color || "#b4a07a"));
+}
+const DUR = 7000;
+const reduceMotion = () => typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function Billboard({ items }) {
   const { state, update, setToast } = useStore();
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  const elapsed = useRef(0); // ms shown of the current slide, kept across pauses
+  const bars = useRef([]);
   const t = items[i];
+  const show = (k) => {
+    elapsed.current = 0;
+    bars.current.forEach((b) => b && (b.style.width = "0%"));
+    setI(k);
+  };
+  // One clock drives both the slide change and the progress bar, so they never drift.
   useEffect(() => {
-    if (paused || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setTimeout(() => setI((i + 1) % items.length), 7000);
-    return () => clearTimeout(id);
+    if (paused || reduceMotion()) return;
+    let raf;
+    let last = performance.now();
+    const tick = (now) => {
+      elapsed.current += now - last;
+      last = now;
+      const bar = bars.current[i];
+      if (bar) bar.style.width = Math.min(100, (elapsed.current / DUR) * 100) + "%";
+      if (elapsed.current >= DUR) return show((i + 1) % items.length);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [i, paused, items.length]);
   const saved = !!state.bookmarks?.[t.id];
   const p = state.progress?.[t.id];
@@ -50,10 +78,10 @@ function Billboard({ items }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setPaused(false)}
     >
       {items.map((x, k) => (
-        <div key={x.id} className={`lx-bill-bg ${k === i ? "on" : ""} ${x.demo ? "" : "lx-bill-bg-book"}`} style={{ backgroundImage: `url("${backdrop(x)}")` }} aria-hidden="true" />
+        <div key={x.id} className={`lx-bill-bg ${k === i ? "on" : ""}`} style={{ backgroundImage: `url("${backdrop(x)}")` }} aria-hidden="true" />
       ))}
       <div className="lx-bill-shade" aria-hidden="true" />
       <div className="lx-bill-in">
@@ -103,8 +131,10 @@ function Billboard({ items }) {
       </div>
       <div className="lx-bill-dots" role="tablist" aria-label="Слайды">
         {items.map((x, k) => (
-          <button key={x.id} role="tab" aria-selected={k === i} aria-label={x.title} className={k === i ? "on" : ""} onClick={() => setI(k)}>
-            <i style={k === i && !paused ? { animationPlayState: "running" } : { animationPlayState: "paused" }} />
+          <button key={x.id} role="tab" aria-selected={k === i} aria-label={x.title} className={k === i ? "on" : ""} onClick={() => show(k)}>
+            <span className="lx-dot-track">
+              <i ref={(el) => (bars.current[k] = el)} style={{ width: k === i && reduceMotion() ? "100%" : undefined }} />
+            </span>
           </button>
         ))}
       </div>

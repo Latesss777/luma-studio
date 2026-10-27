@@ -3,6 +3,8 @@ import { Star, ChevronLeft, ChevronRight, ArrowUpRight, Bookmark, Check } from "
 import { cover } from "../data/books";
 import { go, useStore } from "../shared/store";
 
+export const smooth = () => (typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
+
 export const marks = [
   ["reading", "Читаю"],
   ["planned", "Буду читать"],
@@ -65,8 +67,12 @@ export function Rail({ title, items, more, children, render, wide = false, id })
     if (!el) return;
     setEdge([el.scrollLeft < 8, el.scrollLeft + el.clientWidth > el.scrollWidth - 8]);
   };
-  useEffect(check, [items]);
-  const by = (d) => ref.current?.scrollBy({ left: d * ref.current.clientWidth * 0.8, behavior: "smooth" });
+  useEffect(() => {
+    check();
+    addEventListener("resize", check);
+    return () => removeEventListener("resize", check);
+  }, [items]);
+  const by = (d) => ref.current?.scrollBy({ left: d * ref.current.clientWidth * 0.8, behavior: smooth() });
   return (
     <section className={`lx-section ${wide ? "lx-bleed" : ""}`} aria-labelledby={id}>
       {title && (

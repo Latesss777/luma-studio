@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, ChevronDown, List, MessageSquare, Heart, Settings2, Maximize, ArrowUp, X, Check } from "lucide-react";
-import chapters from "../data/chapters.json";
+import { ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, List, MessageSquare, Heart, Settings2, Maximize, ArrowUp, X, Check } from "lucide-react";
 import { findBook } from "../data/books";
 import { go, useStore } from "../shared/store";
 import { BrandArt } from "../shared/ui";
 import { chaptersOf } from "./Title";
 import Comments from "./Comments";
+import { smooth } from "./ui";
 
 function rng(seed) {
   let a = seed;
@@ -65,7 +65,17 @@ export default function ComicReader({ id, query }) {
   const [pct, setPct] = useState(0);
   const [pageNo, setPageNo] = useState(0);
   const pages = useMemo(() => (t.comic ? Array.from({ length: 7 }, (_, i) => page(t.hue, (ch + 1) * 97 + i * 13 + t.id.length, i, ch)) : []), [t.id, ch]);
-  const text = !t.comic ? chapters[t.id]?.[ch]?.paragraphs || [] : [];
+  // Book texts are large, so they load only when a book is opened.
+  const [bookText, setBookText] = useState(null);
+  useEffect(() => {
+    if (t.comic || bookText) return;
+    let live = true;
+    import("../data/chapters.json").then((m) => live && setBookText(m.default));
+    return () => {
+      live = false;
+    };
+  }, [t.id]);
+  const text = !t.comic ? bookText?.[t.id]?.[ch]?.paragraphs || null : [];
   const likeKey = `${t.id}:${ch}`;
   const liked = !!state.chapterLikes?.[likeKey];
   const thread = `${t.id}:ch${ch}`;
@@ -129,8 +139,8 @@ export default function ComicReader({ id, query }) {
         <button className="lx-rd-logo" aria-label="Luma — главная" onClick={() => go("/")}>
           <BrandArt mark />
         </button>
-        <button className="lx-rd-back" onClick={() => go("/title/" + t.id)}>
-          <ChevronLeft size={18} />
+        <button className="lx-rd-back" aria-label={`Вернуться к «${t.title}»`} onClick={() => go("/title/" + t.id)}>
+          <ArrowLeft size={18} />
           <span>{t.title}</span>
         </button>
         <div className="lx-rd-nav">
@@ -186,11 +196,12 @@ export default function ComicReader({ id, query }) {
         <button aria-label="На весь экран" title="На весь экран" onClick={full}>
           <Maximize size={19} />
         </button>
-        <button aria-label="Наверх" title="Наверх" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+        <button aria-label="Наверх" title="Наверх" onClick={() => window.scrollTo({ top: 0, behavior: smooth() })}>
           <ArrowUp size={19} />
         </button>
       </nav>
 
+      {drawer && <div className="lx-scrim lx-rd-scrim" onClick={() => setDrawer(null)} aria-hidden="true" />}
       {drawer && (
         <aside className="lx-rd-drawer" aria-label={drawer === "chapters" ? "Главы" : drawer === "comments" ? "Комментарии" : "Настройки"}>
           <div className="lx-rd-drawer-head">
@@ -285,10 +296,8 @@ export default function ComicReader({ id, query }) {
             ) : null}
           </>
         ) : (
-          <article className="lx-rd-text" lang="en">
-            {text.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
+          <article className="lx-rd-text" lang="en" aria-busy={!text}>
+            {text ? text.map((p, i) => <p key={i}>{p}</p>) : <p className="lx-rd-loading">Загружаем главу…</p>}
           </article>
         )}
         {(s.mode === "scroll" || !t.comic || ended) && (

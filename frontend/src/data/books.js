@@ -1,5 +1,5 @@
 import { demoTitles, decorate } from "./titles";
-import chapters from "./chapters.json";
+import chapterIndex from "./chapterIndex.json";
 export const books = [
   {
     id: "alice",
@@ -106,7 +106,7 @@ books.forEach((b, i) => {
     type: "Книга",
     genres: [...new Set([b.genre, g2, "Классика"])],
     rating,
-    chapterCount: (chapters[b.id] || []).length,
+    chapterCount: (chapterIndex[b.id] || []).length,
     status: "Завершён",
     views: views * 100 + i * 37,
     likes: views * 31,
