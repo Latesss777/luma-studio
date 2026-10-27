@@ -1,3 +1,5 @@
+import { demoTitles } from "./titles";
+import chapters from "./chapters.json";
 export const books = [
   {
     id: "alice",
@@ -90,8 +92,37 @@ export const books = [
     year: 1851,
   },
 ];
-export const findBook = (id) => books.find((b) => b.id === id) || books[0];
-export const cover = (book) => `/assets/${book.id}-cover.svg`;
+const bookExtra = {
+  alice: [9.5, 2810, "Сказка"],
+  sherlock: [9.3, 2150, "Детектив"],
+  pride: [9.2, 1980, "Роман"],
+  frankenstein: [8.9, 1420, "Готика"],
+  dracula: [9.0, 1730, "Готика"],
+  moby: [8.6, 1110, "Приключения"],
+};
+books.forEach((b, i) => {
+  const [rating, views, g2] = bookExtra[b.id];
+  Object.assign(b, {
+    type: "Книга",
+    genres: [...new Set([b.genre, g2, "Классика"])],
+    rating,
+    chapterCount: (chapters[b.id] || []).length,
+    status: "Завершён",
+    views: views * 100 + i * 37,
+    likes: views * 31,
+    bookmarks: views * 9,
+    age: "12+",
+    updated: Date.UTC(2026, 9, 20 - i * 2, 12),
+    added: Date.UTC(2026, 9, 1),
+    comic: false,
+    demo: false,
+  });
+});
+export const all = [...books, ...demoTitles];
+export const findBook = (id) => all.find((b) => b.id === id) || books[0];
+export const cover = (book) => book.coverData || `/assets/${book.id}-cover.svg`;
+export const types = ["Манга", "Манхва", "Маньхуа", "Комикс", "Книга"];
+export const allGenres = [...new Set(all.flatMap((b) => b.genres))].sort((a, b) => a.localeCompare(b, "ru"));
 export const formats = ["Книги", "Манга и комиксы", "Вебтуны", "Аудиокниги"];
 export const genres = [
   "Фэнтези",

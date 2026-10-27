@@ -5,10 +5,12 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-const KEY = "luma-studios-v1";
+const KEY = "luma-studios-v2";
 const initial = {
-  signedIn: false,
-  onboarded: false,
+  signedIn: true,
+  onboarded: true,
+  bookmarks: {},
+  readChapters: {},
   profile: {
     name: "Алекс",
     username: "alex",
