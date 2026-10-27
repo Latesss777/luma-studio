@@ -15,6 +15,7 @@ import Top from "./lx/Top";
 import Title from "./lx/Title";
 import ComicReader from "./lx/ComicReader";
 import Bookmarks from "./lx/Bookmarks";
+import "@fontsource-variable/exo-2";
 import "./styles.css";
 import "./lx/lx.css";
 class Boundary extends React.Component {

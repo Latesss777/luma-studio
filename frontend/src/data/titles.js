@@ -97,11 +97,11 @@ export function makeCover(id, title, hue, type) {
     stars += `<circle cx="${(r() * 300).toFixed(0)}" cy="${(r() * 220).toFixed(0)}" r="${(r() * 1.4 + 0.3).toFixed(1)}" fill="#fff" opacity="${(0.3 + r() * 0.6).toFixed(2)}"/>`;
   const lines = wrap(title, 13);
   const fs = lines.length > 3 ? 25 : 29;
-  const y0 = 420 - lines.length * (fs + 4);
+  const y0 = 392 - (lines.length - 1) * (fs + 4);
   const text = lines
     .map((ln, i) => `<text x="18" y="${y0 + i * (fs + 4)}" font-size="${fs}">${esc(ln)}</text>`)
     .join("");
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky1}"/><stop offset="1" stop-color="${sky2}"/></linearGradient><radialGradient id="g"><stop offset="0" stop-color="${glow}" stop-opacity=".9"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".78"/></linearGradient></defs><rect width="300" height="450" fill="url(#s)"/>${stars}<circle cx="${cx}" cy="${cy}" r="${rad * 2.4}" fill="url(#g)"/><circle cx="${cx}" cy="${cy}" r="${rad}" fill="${glow}"/>${layers}<rect width="300" height="450" fill="url(#f)"/><g font-family="Manrope, Arial, sans-serif" font-weight="800" fill="#fff" letter-spacing="-.5">${text}</g><text x="18" y="436" font-family="Manrope, Arial, sans-serif" font-size="11" font-weight="700" fill="#fff" opacity=".7">LUMA · ${esc(type.toUpperCase())}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 450"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky1}"/><stop offset="1" stop-color="${sky2}"/></linearGradient><radialGradient id="g"><stop offset="0" stop-color="${glow}" stop-opacity=".9"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".78"/></linearGradient></defs><rect width="300" height="450" fill="url(#s)"/>${stars}<circle cx="${cx}" cy="${cy}" r="${rad * 2.4}" fill="url(#g)"/><circle cx="${cx}" cy="${cy}" r="${rad}" fill="${glow}"/>${layers}<rect width="300" height="450" fill="url(#f)"/><g font-family="Arial, sans-serif" font-weight="700" fill="#fff" letter-spacing="-.5">${text}</g></svg>`;
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
