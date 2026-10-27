@@ -170,3 +170,42 @@ export function decorate(t) {
   const shelves = [0.34, 0.27, 0.22, 0.09, 0.08].map((k) => Math.round(t.bookmarks * k * (0.8 + r() * 0.4)));
   return Object.assign(t, { tags, votes: sum, dist, shelfStats: shelves, volumeSize: 8 + Math.floor(r() * 5) });
 }
+
+// Wide 16:9 backdrop for the home billboard, drawn in code from the title's palette.
+const backdropCache = {};
+export function makeBackdrop(id, hue) {
+  if (backdropCache[id]) return backdropCache[id];
+  const r = rng(hash(id + "wide"));
+  const W = 1600, H = 900;
+  const sky1 = `hsl(${hue} 55% ${10 + r() * 6}%)`;
+  const sky2 = `hsl(${(hue + 40 + r() * 50) % 360} 60% ${30 + r() * 14}%)`;
+  const glow = `hsl(${(hue + 180) % 360} 80% 78%)`;
+  const cx = 900 + r() * 500, cy = 180 + r() * 220, rad = 70 + r() * 70;
+  let stars = "";
+  for (let i = 0; i < 90; i++) stars += `<circle cx="${(r() * W).toFixed(0)}" cy="${(r() * 520).toFixed(0)}" r="${(r() * 1.6 + 0.3).toFixed(1)}" fill="#fff" opacity="${(0.2 + r() * 0.6).toFixed(2)}"/>`;
+  let layers = "";
+  const towers = r() > 0.5;
+  for (let l = 0; l < 4; l++) {
+    const base = 560 + l * 90;
+    const shade = `hsl(${hue} 40% ${8 + l * 3}% / ${0.75 + l * 0.08})`;
+    let d;
+    if (towers) {
+      let x = -10;
+      d = `M-10 ${H} `;
+      while (x < W + 10) {
+        const w = 30 + r() * 70;
+        const top = base - r() * (180 - l * 35);
+        d += `L${x.toFixed(0)} ${top.toFixed(0)} L${(x + w).toFixed(0)} ${top.toFixed(0)} `;
+        x += w;
+      }
+      d += `L${W + 10} ${H} Z`;
+    } else {
+      d = `M-10 ${base} `;
+      for (let x = 0; x <= W + 80; x += 90) d += `Q${x - 45} ${(base - 40 - r() * 150).toFixed(0)} ${x} ${(base - r() * 60).toFixed(0)} `;
+      d += `L${W + 10} ${H} L-10 ${H} Z`;
+    }
+    layers += `<path d="${d}" fill="${shade}"/>`;
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky1}"/><stop offset="1" stop-color="${sky2}"/></linearGradient><radialGradient id="g"><stop offset="0" stop-color="${glow}" stop-opacity=".85"/><stop offset="1" stop-color="${glow}" stop-opacity="0"/></radialGradient></defs><rect width="${W}" height="${H}" fill="url(#s)"/>${stars}<circle cx="${cx}" cy="${cy}" r="${rad * 3}" fill="url(#g)"/><circle cx="${cx}" cy="${cy}" r="${rad}" fill="${glow}"/>${layers}</svg>`;
+  return (backdropCache[id] = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg));
+}

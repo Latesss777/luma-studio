@@ -1,183 +1,305 @@
-import React, { useMemo, useState } from "react";
-import { all, books, findBook } from "../data/books";
+import React, { useEffect, useMemo, useState } from "react";
+import { BookOpen, Headphones, Clapperboard, Play, Plus, Check, Info, Star } from "lucide-react";
+import { all, books, findBook, cover } from "../data/books";
+import { makeBackdrop } from "../data/titles";
 import { go, useStore } from "../shared/store";
-import { Rail, TitleCard, Row, Poster, Score, ago } from "./ui";
+import { Rail, TitleCard, Poster, ago } from "./ui";
 
-const by = (k) => [...all].sort((a, b) => b[k] - a[k]);
+// Streaming-style home. Layout: full-bleed billboard, section switcher, then rows.
+// Formats carry their own colour (read / listen / watch) everywhere they appear.
 
-const collections = [
-  { id: "classic", name: "Классика, которую можно читать здесь", sub: "Книги целиком или первыми главами", pick: (t) => t.type === "Книга" },
+const by = (k, list = all) => [...list].sort((a, b) => b[k] - a[k]);
+const fmtOf = (t) => (t.type === "Книга" ? "book" : "comic");
+
+export const collections = [
+  { id: "classic", name: "Классика целиком", sub: "Книги в общественном достоянии", pick: (t) => t.type === "Книга" },
   { id: "short", name: "Прочитать за вечер", sub: "До 30 глав", pick: (t) => t.comic && t.chapterCount <= 30 },
   { id: "cozy", name: "Тёплая повседневность", sub: "Без спешки и злодеев", pick: (t) => t.genres.some((g) => ["Повседневность", "Комедия"].includes(g)) },
   { id: "done", name: "Уже завершены", sub: "Можно читать до конца", pick: (t) => t.status === "Завершён" },
   { id: "mystery", name: "Загадки и тайны", sub: "Детективы, мистика, триллеры", pick: (t) => t.genres.some((g) => ["Детектив", "Мистика", "Триллер", "Готика"].includes(g)) },
 ];
 
-function Collection({ c }) {
-  const items = all.filter(c.pick).sort((a, b) => b.rating - a.rating);
-  return (
-    <button className="lx-collection" onClick={() => go("/catalog?collection=" + c.id)}>
-      <span className="lx-collection-fan">
-        {items.slice(0, 3).map((t, i) => (
-          <Poster key={t.id} t={t} className={`lx-fan-${i}`} />
-        ))}
-      </span>
-      <strong>{c.name}</strong>
-      <small>
-        {c.sub} · {items.length}
-      </small>
-    </button>
-  );
+const sections = [
+  ["all", "Всё"],
+  ["read", "Читать", BookOpen],
+  ["listen", "Слушать", Headphones],
+  ["watch", "Смотреть", Clapperboard],
+];
+
+function backdrop(t) {
+  return t.demo ? makeBackdrop(t.id, t.hue) : cover(t);
 }
 
-function Columns() {
-  const cols = [
-    ["Новый сезон", all.filter((t) => t.year >= 2026).sort((a, b) => b.rating - a.rating)],
-    ["В тренде", by("views")],
-    ["Популярно сегодня", by("likes")],
-  ];
+function Billboard({ items }) {
+  const { state, update, setToast } = useStore();
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const t = items[i];
+  useEffect(() => {
+    if (paused || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setTimeout(() => setI((i + 1) % items.length), 7000);
+    return () => clearTimeout(id);
+  }, [i, paused, items.length]);
+  const saved = !!state.bookmarks?.[t.id];
+  const p = state.progress?.[t.id];
   return (
-    <section className="lx-section lx-columns" aria-label="Подборки">
-      {cols.map(([name, list]) => (
-        <div key={name} className="lx-column">
-          <div className="lx-section-head">
-            <h2>{name}</h2>
-          </div>
-          <div className="lx-column-list">
-            {list.slice(0, 5).map((t) => (
-              <Row key={t.id} t={t} />
-            ))}
+    <section
+      className="lx-bill"
+      aria-roledescription="карусель"
+      aria-label="Выбор Luma"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      {items.map((x, k) => (
+        <div key={x.id} className={`lx-bill-bg ${k === i ? "on" : ""} ${x.demo ? "" : "lx-bill-bg-book"}`} style={{ backgroundImage: `url("${backdrop(x)}")` }} aria-hidden="true" />
+      ))}
+      <div className="lx-bill-shade" aria-hidden="true" />
+      <div className="lx-bill-in">
+        <div className="lx-bill-text" key={t.id}>
+          <span className={`lx-fmt lx-fmt-${fmtOf(t)}`}>
+            {t.type === "Книга" ? <BookOpen size={14} /> : <BookOpen size={14} />}
+            {t.type}
+            {t.demo && <i>демо</i>}
+          </span>
+          <h1 className="lx-bill-title">{t.title}</h1>
+          <p className="lx-bill-meta">
+            <span className="lx-bill-score"><Star size={14} fill="currentColor" strokeWidth={0} /> {t.rating.toFixed(1)}</span>
+            <span>{t.year}</span>
+            <span>{t.genres.slice(0, 2).join(", ")}</span>
+            <span>{t.chapterCount} глав</span>
+          </p>
+          <p className="lx-bill-desc">{t.description}</p>
+          <div className="lx-bill-actions">
+            <button className="lx-cta" onClick={() => go(`/reader/${t.id}${p ? "" : "?chapter=0"}`)}>
+              <Play size={18} fill="currentColor" />
+              <span className="lx-long">{p ? `Продолжить с главы ${(p.chapter || 0) + 1}` : "Начать читать"}</span>
+              <span className="lx-short">{p ? `Глава ${(p.chapter || 0) + 1}` : "Читать"}</span>
+            </button>
+            <button
+              className="lx-cta-ghost"
+              aria-pressed={saved}
+              onClick={() => {
+                update((s) => {
+                  const b = { ...s.bookmarks };
+                  saved ? delete b[t.id] : (b[t.id] = "planned");
+                  return { bookmarks: b };
+                });
+                setToast(saved ? "Убрано из закладок" : "Добавлено в «Буду читать»");
+              }}
+            >
+              {saved ? <Check size={18} /> : <Plus size={18} />}
+              {saved ? "В закладках" : "Буду читать"}
+            </button>
+            <button className="lx-cta-round" aria-label={`Подробнее о «${t.title}»`} onClick={() => go("/title/" + t.id)}>
+              <Info size={20} />
+            </button>
           </div>
         </div>
-      ))}
-    </section>
-  );
-}
-
-function TopTitles() {
-  const tabs = ["Манхва", "Манга", "Маньхуа", "Книга"];
-  const [tab, setTab] = useState(tabs[0]);
-  const list = all.filter((t) => t.type === tab).sort((a, b) => b.rating - a.rating);
-  return (
-    <Rail
-      id="top"
-      title="Топ тайтлов"
-      more={"/top?type=" + encodeURIComponent(tab)}
-      items={list}
-      render={(t, i) => <TitleCard key={t.id} t={t} rank={i + 1} />}
-    >
-      <div className="lx-chips" role="tablist" aria-label="Тип">
-        {tabs.map((t) => (
-          <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
-            {t === "Книга" ? "Книги" : t}
+        <button className="lx-bill-cover" onClick={() => go("/title/" + t.id)} aria-label={`Открыть «${t.title}»`}>
+          <Poster t={t} tag={false} />
+        </button>
+      </div>
+      <div className="lx-bill-dots" role="tablist" aria-label="Слайды">
+        {items.map((x, k) => (
+          <button key={x.id} role="tab" aria-selected={k === i} aria-label={x.title} className={k === i ? "on" : ""} onClick={() => setI(k)}>
+            <i style={k === i && !paused ? { animationPlayState: "running" } : { animationPlayState: "paused" }} />
           </button>
         ))}
       </div>
-    </Rail>
-  );
-}
-
-function Updates() {
-  const [n, setN] = useState(8);
-  const list = all.filter((t) => t.comic).sort((a, b) => b.updated - a.updated);
-  return (
-    <section className="lx-section" aria-labelledby="upd">
-      <div className="lx-section-head">
-        <h2 id="upd">Последние обновления</h2>
-      </div>
-      <div className="lx-updates">
-        {list.slice(0, n).map((t) => (
-          <div key={t.id} className="lx-update">
-            <button className="lx-update-cover" onClick={() => go("/title/" + t.id)} aria-label={t.title}>
-              <Poster t={t} />
-            </button>
-            <div className="lx-update-text">
-              <button className="lx-link-strong" onClick={() => go("/title/" + t.id)}>
-                {t.title}
-              </button>
-              <small>
-                {t.type} · {t.genres.join(", ")}
-              </small>
-              <div className="lx-update-chapters">
-                {[0, 1].map((k) => (
-                  <button key={k} onClick={() => go(`/reader/${t.id}?chapter=${t.chapterCount - 1 - k}`)}>
-                    Глава {t.chapterCount - k}
-                    <span>{ago(t.updated - k * 7 * 86400000)}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      {n < list.length && (
-        <button className="lx-btn lx-btn-ghost lx-wide" onClick={() => setN(n + 8)}>
-          Показать ещё
-        </button>
-      )}
     </section>
   );
 }
 
-export default function Home() {
-  const { state } = useStore();
-  const popular = useMemo(() => by("views").slice(0, 16), []);
-  const fresh = useMemo(() => [...all].filter((t) => t.comic).sort((a, b) => b.added - a.added).slice(0, 14), []);
-  const chapters = useMemo(() => all.filter((t) => t.comic).sort((a, b) => b.updated - a.updated).slice(0, 14), []);
-  const continuing = Object.entries(state.progress || {})
-    .filter(([id]) => all.some((t) => t.id === id))
-    .map(([id, p]) => [findBook(id), p]);
+function Sections({ sec }) {
   return (
-    <div className="lx-page lx-home">
-      <Rail wide items={popular} id="popular-top" />
-      {continuing.length > 0 && (
-        <Rail
-          id="continue"
-          title="Продолжить чтение"
-          items={continuing.map(([t]) => t)}
-          render={(t) => {
-            const p = state.progress[t.id];
-            return (
-              <div key={t.id} className="lx-continue">
-                <TitleCard t={t} sub={`Глава ${(p.chapter || 0) + 1} · ${p.percent || 0}%`} />
-                <span className="lx-progress" style={{ "--p": (p.percent || 0) + "%" }} />
-              </div>
-            );
-          }}
-        />
-      )}
-      <Rail id="fresh" title="Горячие новинки" more="/catalog?sort=new" items={fresh} />
-      <Columns />
-      <Rail id="popular" title="Популярное" more="/catalog?sort=views" items={by("likes").slice(0, 16)} />
-      <section className="lx-section" aria-labelledby="coll">
-        <div className="lx-section-head">
-          <h2 id="coll">Коллекции</h2>
-        </div>
-        <div className="lx-collections">
-          {collections.map((c) => (
-            <Collection key={c.id} c={c} />
-          ))}
-        </div>
-      </section>
-      <TopTitles />
-      <Rail
-        id="chapters"
-        title="Свежие главы"
-        more="/catalog?sort=updated"
-        items={chapters}
-        render={(t) => <TitleCard key={t.id} t={t} sub={`Глава ${t.chapterCount} · ${ago(t.updated)}`} />}
-      />
-      <Rail id="books" title="Книги целиком" more="/catalog?type=Книга" items={books} />
-      <Updates />
-      <footer className="lx-footer">
-        <p>
-          Luma Studios — прототип. Тайтлы с пометкой «демо» придуманы для показа интерфейса: обложки нарисованы кодом, главы
-          состоят из демо-страниц. Книги — произведения в общественном достоянии из Standard Ebooks.
-        </p>
-        <p>Закладки, оценки и прогресс хранятся только в этом браузере.</p>
-      </footer>
+    <div className="lx-secs" role="tablist" aria-label="Разделы">
+      {sections.map(([k, l, I]) => (
+        <button key={k} role="tab" aria-selected={sec === k} className={`lx-sec lx-sec-${k} ${sec === k ? "active" : ""}`} onClick={() => go(k === "all" ? "/" : "/?s=" + k)}>
+          {I && <I size={17} />}
+          {l}
+        </button>
+      ))}
     </div>
   );
 }
 
-export { collections };
+function ContinueCard({ t, p }) {
+  return (
+    <button className="lx-wide-card" onClick={() => go(`/reader/${t.id}`)}>
+      <span className="lx-wide-art" style={{ backgroundImage: `url("${backdrop(t)}")` }}>
+        <span className="lx-wide-play"><Play size={18} fill="currentColor" /></span>
+      </span>
+      <span className="lx-wide-text">
+        <strong>{t.title}</strong>
+        <small>Глава {(p.chapter || 0) + 1} из {t.chapterCount}</small>
+      </span>
+      <span className="lx-wide-bar"><i style={{ width: Math.max(4, p.percent || 0) + "%" }} /></span>
+    </button>
+  );
+}
+
+function Top10({ list }) {
+  return (
+    <Rail
+      id="top10"
+      title="Топ-10 недели"
+      more="/top"
+      items={list.slice(0, 10)}
+      render={(t, i) => (
+        <button key={t.id} className="lx-top10" onClick={() => go("/title/" + t.id)} aria-label={`${i + 1} место: ${t.title}`}>
+          <span className="lx-top10-n" aria-hidden="true">{i + 1}</span>
+          <Poster t={t} tag={false} />
+        </button>
+      )}
+    />
+  );
+}
+
+function Moods() {
+  const moods = [
+    ["Фэнтези", 268],
+    ["Романтика", 340],
+    ["Мистика", 220],
+    ["Боевик", 8],
+    ["Повседневность", 150],
+    ["Детектив", 40],
+    ["Комедия", 52],
+    ["Фантастика", 196],
+  ];
+  return (
+    <section className="lx-section" aria-labelledby="moods">
+      <div className="lx-section-head">
+        <h2 id="moods">Под настроение</h2>
+      </div>
+      <div className="lx-moods">
+        {moods.map(([g, h]) => (
+          <button key={g} className="lx-mood" style={{ "--h": h }} onClick={() => go("/catalog?genre=" + encodeURIComponent(g))}>
+            <span>{g}</span>
+            <small>{all.filter((t) => t.genres.includes(g)).length}</small>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Shelf({ c }) {
+  const items = all.filter(c.pick).sort((a, b) => b.rating - a.rating);
+  return (
+    <button className="lx-shelf" onClick={() => go("/catalog?collection=" + c.id)}>
+      <span className="lx-shelf-text">
+        <strong>{c.name}</strong>
+        <small>{c.sub} · {items.length}</small>
+      </span>
+      <span className="lx-shelf-stack" aria-hidden="true">
+        {items.slice(0, 4).map((t, i) => (
+          <Poster key={t.id} t={t} tag={false} className={`lx-stack-${i}`} />
+        ))}
+      </span>
+    </button>
+  );
+}
+
+function Listen() {
+  const alice = findBook("alice");
+  return (
+    <>
+      <section className="lx-section" aria-labelledby="listen-now">
+        <div className="lx-section-head">
+          <h2 id="listen-now">Слушать сейчас</h2>
+        </div>
+        <button className="lx-audio-hero" onClick={() => go("/audio")}>
+          <Poster t={alice} tag={false} className="lx-audio-cover" />
+          <span className="lx-audio-text">
+            <span className="lx-fmt lx-fmt-listen"><Headphones size={14} /> Аудиокнига</span>
+            <strong>{alice.title}</strong>
+            <small>{alice.author} · первая глава в озвучке</small>
+            <span className="lx-cta lx-cta-listen"><Play size={18} fill="currentColor" /> Слушать</span>
+          </span>
+        </button>
+      </section>
+      <Soon kind="listen" />
+    </>
+  );
+}
+
+function Soon({ kind }) {
+  const text =
+    kind === "watch"
+      ? ["Смотреть — скоро", "Аниме, фильмы и сериалы появятся здесь из официальных источников: встроенные плееры правообладателей и бесплатные каталоги."]
+      : ["Больше аудиокниг — скоро", "Озвучки классики и авторские аудиокниги будут собираться в этом разделе."];
+  return (
+    <section className={`lx-soon lx-soon-${kind}`}>
+      <span className={`lx-fmt lx-fmt-${kind}`}>{kind === "watch" ? <Clapperboard size={14} /> : <Headphones size={14} />} Скоро</span>
+      <h2>{text[0]}</h2>
+      <p>{text[1]}</p>
+    </section>
+  );
+}
+
+export default function Home({ query = "" }) {
+  const { state } = useStore();
+  const sec = new URLSearchParams(query).get("s") || "all";
+  const pool = sec === "read" ? all : all;
+  const picks = useMemo(() => ["lighthouse", "teahouse", "alice", "dragoncook", "eclipse"].map(findBook), []);
+  const continuing = Object.entries(state.progress || {})
+    .filter(([id]) => all.some((t) => t.id === id))
+    .map(([id, p]) => [findBook(id), p]);
+  const lastRead = continuing.length ? continuing[continuing.length - 1][0] : null;
+  const because = lastRead
+    ? all.filter((x) => x.id !== lastRead.id && x.genres.some((g) => lastRead.genres.includes(g))).sort((a, b) => b.rating - a.rating).slice(0, 12)
+    : [];
+  const fresh = by("added", pool.filter((t) => t.comic)).slice(0, 14);
+  const updates = by("updated", pool.filter((t) => t.comic)).slice(0, 14);
+  const soon = all.filter((t) => t.status === "Анонс" || t.year >= 2026);
+  return (
+    <div className="lx-home2">
+      <Billboard items={picks} />
+      <div className="lx-page lx-home2-body">
+        <Sections sec={sec} />
+        {sec === "watch" ? (
+          <Soon kind="watch" />
+        ) : sec === "listen" ? (
+          <Listen />
+        ) : (
+          <>
+            {continuing.length > 0 && (
+              <Rail id="cont" title="Продолжить" items={continuing.map(([t]) => t)} render={(t) => <ContinueCard key={t.id} t={t} p={state.progress[t.id]} />} />
+            )}
+            <Top10 list={by("views")} />
+            {because.length > 0 && <Rail id="because" title={`Потому что вы читали «${lastRead.title}»`} items={because} />}
+            <Rail id="fresh" title="Новинки" more="/catalog?sort=added" items={fresh} />
+            <Moods />
+            <section className="lx-section" aria-labelledby="shelves">
+              <div className="lx-section-head">
+                <h2 id="shelves">Подборки Luma</h2>
+              </div>
+              <div className="lx-shelves">
+                {collections.map((c) => (
+                  <Shelf key={c.id} c={c} />
+                ))}
+              </div>
+            </section>
+            <Rail
+              id="upd"
+              title="Вышли новые главы"
+              more="/catalog?sort=updated"
+              items={updates}
+              render={(t) => <TitleCard key={t.id} t={t} sub={`Глава ${t.chapterCount} · ${ago(t.updated)}`} />}
+            />
+            <Rail id="books" title="Книги целиком" more="/catalog?type=Книга" items={books} />
+            <Rail id="soon" title="Скоро и только что вышло" items={soon} />
+            {sec === "all" && (
+              <>
+                <Listen />
+                <Soon kind="watch" />
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

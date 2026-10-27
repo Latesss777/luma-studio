@@ -14,7 +14,7 @@ import Title from "./lx/Title";
 import ComicReader from "./lx/ComicReader";
 import Bookmarks from "./lx/Bookmarks";
 import Footer, { Info, Notifications } from "./lx/Footer";
-import "@fontsource-variable/exo-2";
+import "@fontsource-variable/unbounded";
 import "./styles.css";
 import "./lx/lx.css";
 class Boundary extends React.Component {
@@ -61,10 +61,10 @@ function App() {
       >
         К содержимому
       </a>
-      <Header path={path} />
+      <Header path={path} query={query} />
       <main id="main-content" tabIndex={-1} className="lx-main" key={page || "home"}>
         {!page ? (
-          <Home />
+          <Home query={query} />
         ) : page === "catalog" ? (
           <Catalog query={query} />
         ) : page === "top" ? (

@@ -135,6 +135,7 @@ function More() {
   const ref = useRef(null);
   useOutside(ref, open, () => setOpen(false));
   const links = [
+    ["/top", "Топы"],
     ["/audio", "Аудиокниги"],
     ["/library", "Мои полки"],
     ["/integrations", "Импорт и экспорт"],
@@ -165,23 +166,34 @@ function More() {
   );
 }
 
-export default function Header({ path }) {
+export default function Header({ path, query = "" }) {
   const { state, update } = useStore();
   const light = state.theme === "light";
+  const [solid, setSolid] = useState(false);
+  useEffect(() => {
+    const f = () => setSolid(scrollY > 24);
+    f();
+    addEventListener("scroll", f, { passive: true });
+    return () => removeEventListener("scroll", f);
+  }, []);
+  const sec = path === "/" ? new URLSearchParams(query).get("s") || "all" : "";
   const nav = [
-    ["/catalog", "Каталог"],
-    ["/top", "Топы"],
+    ["/", "Главная", path === "/" && sec === "all"],
+    ["/?s=read", "Читать", sec === "read"],
+    ["/?s=listen", "Слушать", sec === "listen"],
+    ["/?s=watch", "Смотреть", sec === "watch"],
+    ["/catalog", "Каталог", path.startsWith("/catalog")],
   ];
   return (
-    <header className="lx-header">
+    <header className={`lx-header ${path === "/" && !solid ? "lx-header-clear" : ""}`}>
       <div className="lx-header-in">
         <button className="lx-logo" aria-label="Luma — главная" onClick={() => go("/")}>
           <BrandArt mark />
           <span className="lx-logo-word">Luma</span>
         </button>
         <nav className="lx-nav" aria-label="Разделы">
-          {nav.map(([u, l]) => (
-            <button key={u} className={`lx-nav-link ${path.startsWith(u) ? "active" : ""}`} onClick={() => go(u)}>
+          {nav.map(([u, l, on]) => (
+            <button key={u} className={`lx-nav-link ${on ? "active" : ""}`} aria-current={on ? "page" : undefined} onClick={() => go(u)}>
               {l}
             </button>
           ))}
