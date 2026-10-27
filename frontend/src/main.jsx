@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider, useRoute } from "./shared/store";
-import { findBook } from "./data/books";
 import { Author } from "./title/Title";
-import Reader from "./reader/Reader";
 import Audio from "./audio/Audio";
 import Library from "./library/Library";
 import Profile from "./profile/Profile";
@@ -15,6 +13,7 @@ import Top from "./lx/Top";
 import Title from "./lx/Title";
 import ComicReader from "./lx/ComicReader";
 import Bookmarks from "./lx/Bookmarks";
+import Footer, { Info, Notifications } from "./lx/Footer";
 import "@fontsource-variable/exo-2";
 import "./styles.css";
 import "./lx/lx.css";
@@ -48,12 +47,7 @@ function App() {
     document.title = "Luma — читать мангу, комиксы и книги";
   }, []);
   if (page === "reader") {
-    const t = findBook(id);
-    return t.comic ? (
-      <ComicReader key={id + query} id={id} query={query} />
-    ) : (
-      <Reader key={id + query} id={id} query={query} />
-    );
+    return <ComicReader key={id + query} id={id} query={query} />;
   }
   return (
     <div className="lx-app">
@@ -79,6 +73,10 @@ function App() {
           <Title key={id} id={id} query={query} />
         ) : page === "bookmarks" ? (
           <Bookmarks query={query} />
+        ) : page === "notifications" ? (
+          <Notifications />
+        ) : page === "info" ? (
+          <Info key={id} id={id} />
         ) : page === "author" ? (
           <div className="lx-page lx-legacy"><Author id={id} /></div>
         ) : page === "audio" ? (
@@ -93,6 +91,7 @@ function App() {
           <Home />
         )}
       </main>
+      <Footer />
       <MobileNav path={path} />
     </div>
   );

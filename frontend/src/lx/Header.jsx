@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Search, Bookmark, Bell, MoreHorizontal, Sun, Moon, X, House, LayoutGrid, Trophy, UserRound } from "lucide-react";
+import { Search, Bookmark, Bell, MoreHorizontal, Sun, Moon, X, LayoutGrid, Menu } from "lucide-react";
 import { all } from "../data/books";
 import { go, useStore } from "../shared/store";
 import { BrandArt } from "../shared/ui";
@@ -211,21 +211,66 @@ export default function Header({ path }) {
 }
 
 export function MobileNav({ path }) {
+  const { state, update } = useStore();
+  const [menu, setMenu] = useState(false);
+  const light = state.theme === "light";
+  const ids = Object.keys(state.bookmarks || {});
   const items = [
-    ["/", "Главная", House],
     ["/catalog", "Каталог", LayoutGrid],
-    ["/top", "Топы", Trophy],
     ["/bookmarks", "Закладки", Bookmark],
-    ["/profile", "Профиль", UserRound],
+  ];
+  const links = [
+    ["/top", "Топы"],
+    ["/audio", "Аудиокниги"],
+    ["/library", "Мои полки"],
+    ["/profile", "Профиль"],
+    ["/integrations", "Импорт и экспорт"],
   ];
   return (
-    <nav className="lx-mobile-nav" aria-label="Навигация">
-      {items.map(([u, l, I]) => (
-        <button key={u} className={(u === "/" ? path === "/" : path.startsWith(u)) ? "active" : ""} onClick={() => go(u)}>
-          <I size={21} />
-          <span>{l}</span>
+    <>
+      <nav className="lx-mobile-nav" aria-label="Навигация">
+        {items.map(([u, l, I]) => (
+          <button key={u} className={path.startsWith(u) ? "active" : ""} onClick={() => go(u)}>
+            <I size={21} />
+            <span>{l}</span>
+          </button>
+        ))}
+        <button className={`lx-mnav-home ${path === "/" ? "active" : ""}`} aria-label="Главная" onClick={() => go("/")}>
+          <BrandArt mark />
         </button>
-      ))}
-    </nav>
+        <button className={path.startsWith("/notifications") ? "active" : ""} onClick={() => go("/notifications")}>
+          <Bell size={21} />
+          {ids.length > 0 && <i className="lx-dot lx-dot-nav" />}
+          <span>Уведомления</span>
+        </button>
+        <button className={menu ? "active" : ""} aria-expanded={menu} onClick={() => setMenu(!menu)}>
+          <Menu size={21} />
+          <span>Меню</span>
+        </button>
+      </nav>
+      {menu && (
+        <div className="lx-sheet-wrap" onClick={() => setMenu(false)}>
+          <div className="lx-sheet" role="dialog" aria-label="Меню" onClick={(e) => e.stopPropagation()}>
+            <div className="lx-sheet-head">
+              <button className="lx-sheet-profile" onClick={() => (setMenu(false), go("/profile"))}>
+                <span className="lx-avatar">{state.profile.avatar ? <img src={state.profile.avatar} alt="" /> : state.profile.name[0]}</span>
+                <strong>{state.profile.name}</strong>
+              </button>
+              <button className="lx-icon" aria-label="Закрыть меню" onClick={() => setMenu(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            {links.map(([u, l]) => (
+              <button key={u} className="lx-sheet-link" onClick={() => (setMenu(false), go(u))}>
+                {l}
+              </button>
+            ))}
+            <button className="lx-sheet-link" onClick={() => update({ theme: light ? "dark" : "light" })}>
+              {light ? <Moon size={18} /> : <Sun size={18} />} {light ? "Тёмная тема" : "Светлая тема"}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

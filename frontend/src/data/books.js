@@ -1,4 +1,4 @@
-import { demoTitles } from "./titles";
+import { demoTitles, decorate } from "./titles";
 import chapters from "./chapters.json";
 export const books = [
   {
@@ -118,7 +118,8 @@ books.forEach((b, i) => {
     demo: false,
   });
 });
-export const all = [...books, ...demoTitles];
+export const all = [...books, ...demoTitles].map(decorate);
+export const allTags = [...new Set(all.flatMap((b) => b.tags))].sort((a, b) => a.localeCompare(b, "ru"));
 export const findBook = (id) => all.find((b) => b.id === id) || books[0];
 export const cover = (book) => book.coverData || `/assets/${book.id}-cover.svg`;
 export const types = ["Манга", "Манхва", "Маньхуа", "Комикс", "Книга"];

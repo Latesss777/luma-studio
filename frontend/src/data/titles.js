@@ -146,3 +146,27 @@ export function chapterList(t) {
     date: t.updated - (t.chapterCount - 1 - i) * 7 * DAY,
   }));
 }
+
+// Tags, rating and bookmark distributions are generated deterministically for the demo.
+const tagPool = [
+  "Сильный ГГ", "ГГ девушка", "Магия", "Другой мир", "Система", "Монстры", "Дружба", "Месть",
+  "Путешествия", "Загадки", "Кулинария", "Исторический сеттинг", "Антигерой", "Медленная романтика",
+  "Найдённая семья", "Башня", "Академия", "Город", "Ночь", "Время",
+];
+export function decorate(t) {
+  const r = rng(hash(t.id + "tags"));
+  const tags = [];
+  while (tags.length < 5 + Math.floor(r() * 4)) {
+    const x = tagPool[Math.floor(r() * tagPool.length)];
+    if (!tags.includes(x)) tags.push(x);
+  }
+  const votes = Math.round(t.views / (18 + r() * 10));
+  const peak = Math.round(t.rating);
+  const dist = Array.from({ length: 10 }, (_, i) => {
+    const s = 10 - i;
+    return Math.round(votes * Math.max(0.004, Math.exp(-Math.abs(s - peak) * 0.9)) * (0.8 + r() * 0.4));
+  });
+  const sum = dist.reduce((a, b) => a + b, 0);
+  const shelves = [0.34, 0.27, 0.22, 0.09, 0.08].map((k) => Math.round(t.bookmarks * k * (0.8 + r() * 0.4)));
+  return Object.assign(t, { tags, votes: sum, dist, shelfStats: shelves, volumeSize: 8 + Math.floor(r() * 5) });
+}
