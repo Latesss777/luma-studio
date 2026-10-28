@@ -17,7 +17,7 @@ import {
   Skull,
 } from "lucide-react";
 import { cover, findBook } from "../data/books";
-import { trailers, youtubeEmbed } from "../data/trailers";
+import { trailers, trailerEmbed } from "../data/trailers";
 import { go, useStore } from "./store";
 export const formatIcons = [BookOpen, PanelsTopLeft, ScrollText, Headphones];
 export const genreIcons = [Sparkles, Search, Heart, Orbit, Skull, Compass];
@@ -260,7 +260,7 @@ export function ShelfPicker({ id }) {
 }
 export function Trailer({ id }) {
   const t = trailers[id];
-  const embed = t && youtubeEmbed(t.url);
+  const embed = t && trailerEmbed(t.url);
   if (!embed) return null;
   return (
     <section className="trailer">
@@ -273,7 +273,7 @@ export function Trailer({ id }) {
           src={embed}
           title={`Трейлер: ${t.title}`}
           loading="lazy"
-          allow="encrypted-media; picture-in-picture; fullscreen"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
           referrerPolicy="strict-origin-when-cross-origin"
           allowFullScreen
         />
