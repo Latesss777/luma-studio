@@ -20,11 +20,7 @@ else
   git -C "$BOT_DIR" pull
 fi
 
-# Сайт Luma Studio: сборка, которую отдаёт Caddy
-git -C ../.. pull
-(cd ../.. && npm ci && npm run build)
-
 export BOT_DIR
 sudo docker compose up -d --build
 sudo docker compose ps
-echo "Готово: бот https://$(grep ^BOT_DOMAIN .env | cut -d= -f2), сайт https://$(grep ^LUMA_DOMAIN .env | cut -d= -f2)"
+echo "Готово: бот https://$(grep ^BOT_DOMAIN .env | cut -d= -f2)"
