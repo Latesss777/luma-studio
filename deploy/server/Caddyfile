@@ -2,3 +2,9 @@
 {$BOT_DOMAIN} {
 	reverse_proxy bot:3000
 }
+
+{$LUMA_DOMAIN} {
+	root * /srv/luma
+	try_files {path} /index.html
+	file_server
+}
