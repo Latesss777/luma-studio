@@ -1,0 +1,10 @@
+# HTTPS сертификаты Let's Encrypt выдаются автоматически (нужны открытые порты 80 и 443).
+{$BOT_DOMAIN} {
+	reverse_proxy bot:3000
+}
+
+{$LUMA_DOMAIN} {
+	root * /srv/luma
+	try_files {path} /index.html
+	file_server
+}

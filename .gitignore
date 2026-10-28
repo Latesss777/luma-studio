@@ -8,3 +8,5 @@ output/
 frontend/public/assets/*.jpg
 frontend/public/assets/*-cover.svg
 frontend/public/assets/illustration-*.svg
+deploy/server/.env
+deploy/server/schoolbot.env

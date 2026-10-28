@@ -1,0 +1,53 @@
+# Бот, база данных, HTTPS и сайт Luma Studio на одном сервере.
+# Запуск: ./setup.sh (см. рядом)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: schoolbot
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: schoolbot
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U schoolbot"]
+      interval: 5s
+      retries: 20
+
+  bot:
+    build: ${BOT_DIR:-../../../school-info-bot}
+    restart: unless-stopped
+    env_file: ./schoolbot.env
+    environment:
+      PORT: "3000"
+      DATABASE_URL: postgres://schoolbot:${DB_PASSWORD}@db:5432/schoolbot
+      PUBLIC_BASE_URL: https://${BOT_DOMAIN}
+      SCHOOL_TIME_ZONE: Europe/Moscow
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      BOT_DOMAIN: ${BOT_DOMAIN}
+      LUMA_DOMAIN: ${LUMA_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../../frontend/dist:/srv/luma:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - bot
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:
