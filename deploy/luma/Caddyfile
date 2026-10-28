@@ -1,0 +1,6 @@
+# HTTPS выдаётся автоматически. Нужны открытые порты 80 и 443.
+{$LUMA_DOMAIN} {
+	root * /srv/luma
+	try_files {path} /index.html
+	file_server
+}

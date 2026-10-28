@@ -1,4 +1,4 @@
-# Бот, база данных, HTTPS и сайт Luma Studio на одном сервере.
+# Бот и база данных на сервере бота (141.133.199.46) с HTTPS через Caddy.
 # Запуск: ./setup.sh (см. рядом)
 services:
   db:
@@ -38,10 +38,8 @@ services:
       - "443:443"
     environment:
       BOT_DOMAIN: ${BOT_DOMAIN}
-      LUMA_DOMAIN: ${LUMA_DOMAIN}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ../../frontend/dist:/srv/luma:ro
       - caddy-data:/data
       - caddy-config:/config
     depends_on:
