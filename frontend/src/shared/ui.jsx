@@ -128,11 +128,38 @@ export function Cover({ book, ...props }) {
     />
   );
 }
+// Превью при наведении: короткий собственный ролик (12 с, без звука), только на устройствах с мышью.
+function PosterPreview({ id }) {
+  const [broken, setBroken] = React.useState(false);
+  if (broken) return null;
+  return (
+    <video
+      className="poster-preview"
+      src={`/assets/previews/${id}.mp4`}
+      muted
+      loop
+      playsInline
+      autoPlay
+      preload="none"
+      aria-hidden="true"
+      onError={() => setBroken(true)}
+    />
+  );
+}
 export function Card({ book, selectable = false, selected = false, onSelect }) {
+  const [hover, setHover] = React.useState(false);
+  const canHover =
+    typeof matchMedia === "function" &&
+    matchMedia("(hover: hover) and (pointer: fine)").matches &&
+    !matchMedia("(prefers-reduced-motion: reduce)").matches;
   return (
     <article className="book-card">
       <button
         className="poster-button"
+        onPointerEnter={() => canHover && setHover(true)}
+        onPointerLeave={() => setHover(false)}
+        onFocus={() => canHover && setHover(true)}
+        onBlur={() => setHover(false)}
         onClick={() =>
           selectable ? onSelect(book.id) : go("/title/" + book.id)
         }
@@ -144,6 +171,7 @@ export function Card({ book, selectable = false, selected = false, onSelect }) {
         aria-pressed={selectable ? selected : undefined}
       >
         <Cover book={book} />
+        {hover && <PosterPreview id={book.id} />}
         {selectable && (
           <span className="selection">
             {selected ? <Check size={18} /> : <Plus size={18} />}

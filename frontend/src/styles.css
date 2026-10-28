@@ -4032,3 +4032,18 @@ html.tv-mode .app-shell.tv input {
 html.tv-mode .app-shell.tv .sidebar nav button {
   min-height: 56px;
 }
+
+/* Превью при наведении на обложку */
+.poster-button {
+  position: relative;
+}
+.poster-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  background: #000;
+  pointer-events: none;
+}
