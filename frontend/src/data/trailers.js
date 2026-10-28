@@ -2,7 +2,10 @@
 // Видео не скачивается и не хранится в приложении: показывается официальный плеер платформы.
 // Ключ — id произведения (или "alice-audio" для аудиокниги).
 // Пример: alice: { title: "…", kind: "Трейлер фильма", url: "https://vkvideo.ru/video-123456_789012" }
-export const trailers = {};
+import approved from "./trailers.json";
+
+// Подтверждённые автоматически (scripts/find-trailers.mjs --publish) и ручные записи.
+export const trailers = { ...approved };
 
 // Возвращает адрес официального плеера (YouTube без cookies, Rutube или VK Видео) или null.
 export function trailerEmbed(url) {
