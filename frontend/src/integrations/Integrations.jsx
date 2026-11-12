@@ -112,13 +112,37 @@ export default function Integrations() {
     setStage(3);
   };
   const rows = exportRows(state, parts);
+  const exportToAsiris = () => {
+    const progress = Object.entries(state.progress || {}).map(([bookId, position]) => {
+      const book = findBook(bookId);
+      if (!book) return null;
+      return {
+        bookId,
+        title: book.title,
+        author: book.author || "",
+        percent: Number.isFinite(Number(position?.percent)) ? Math.min(100,Math.max(0,Math.round(Number(position.percent)))) : 0,
+      };
+    }).filter(Boolean);
+    const data = { schema: "luma-studio-asiris-v1", exportedAt: new Date().toISOString(), progress };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)], {type:"application/json"}));
+    const link = document.createElement("a");
+    link.href=url;
+    link.download="luma-studio-asiris.json";
+    link.click();
+    window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+    setToast("Экспорт создан. Импортируй файл на экране «Статистика» в ASIRIS.");
+  };
   return (
     <>
       <PageHead
         title="Истории без границ"
         sub="Собирай в одном месте. Забирай с собой."
       />
-      <div className="tabs" role="tablist" aria-label="Импорт и экспорт">
+      <section style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:16,flexWrap:"wrap",padding:"16px",border:"1px solid var(--border, #333)",borderRadius:16,marginBottom:20}}>
+        <div><strong>ASIRIS OS</strong><p className="muted" style={{fontSize:13,margin:"6px 0 0"}}>Экспорт реального прогресса чтения в JSON. Время чтения не измеряется.</p></div>
+        <Button secondary onClick={exportToAsiris} icon={Download}>Экспорт для ASIRIS</Button>
+      </section>
+            <div className="tabs" role="tablist" aria-label="Импорт и экспорт">
         {["Импорт", "Экспорт"].map((t) => (
           <button
             role="tab"
